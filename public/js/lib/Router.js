@@ -37,17 +37,12 @@
 	 */
 	function Router() {
 		var router = this;
+		this.routes = [];
+		
 		EventEmitter.call(this);
-		addEventListener('popState', function() {
-			var url = location.pathname || location.hash,
-				route, matches, i;
-			for (i=router.routes.length; i--; ) {
-				route = router.routes[i];
-				matches = exec(url, route.url);
-				if (matches && route.handler(matches)!==false) {
-					return;
-				}
-			}
+		
+		addEventListener('popstate', function() {
+			route(router, location.pathname || location.hash);
 		});
 	}
 	
@@ -62,9 +57,13 @@
 				handler : handler
 			});
 			this.routes.sort(sort);
-			return this;
 		}
-		
+		else {
+			history.pushState(0, 0, url);
+			if (this.currentUrl!==url) {
+				route(this, url);
+			}
+		}
 		return this;
 	};
 	
@@ -73,11 +72,25 @@
 	 */
 	Router.prototype.get = Router.prototype.route;
 	
+	
+	/**	Perform routing for the given router+url combo. */
+	function route(router, url) {
+		var route, matches, i;
+		for (i=router.routes.length; i--; ) {
+			route = router.routes[i];
+			matches = exec(url, route.url);
+			if (matches && route.handler(matches)!==false) {
+				router.currentUrl = url;
+				return;
+			}
+		}
+	}
+	
 	/**	Check if the given URL matches a route's URL pattern.
 	 *	@returns key-value matches for a match, or false for a mismatch
 	 */
 	function exec(url, route) {
-		var matches;
+		var matches = {};
 		url = segmentize(url);
 		route = segmentize(route);
 		for (var i=0; i<Math.max(url.length, route.length); i++) {
