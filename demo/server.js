@@ -12,7 +12,7 @@ app.use(function(req, res, next) {
 	next();
 });
 
-app.use(express.static('./public'));
+app.use(express.static('./'));
 
 app.listen(port, function() {
 	console.log('Server listening on localhost:'+port);
