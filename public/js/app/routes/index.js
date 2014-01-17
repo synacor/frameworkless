@@ -1,13 +1,12 @@
-define(['util'], function(util) {
+define(['util', 'ford', 'text!templates/index.html'], function(util, $, view) {
 	var page = {
 		url : '/',
-		
 		load : function() {
-			document.body.innerHTML = util.template('<h1>Hello, {{{recipient.name}}}!</h1><p><a href="/#about/">About Page</a></p>', {
+			$('#main').html(util.template(view, {
 				recipient : {
 					name : "World"
 				}
-			});
+			}));
 		}
 	};
 	

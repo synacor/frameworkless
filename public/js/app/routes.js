@@ -1,20 +1,25 @@
 define([
-	'util', 'Router',
+	'util', 'router', 'events',
 	'./routes/index',
-	'./routes/about'
+	'./routes/about',
+	'./routes/test'
 ], function(
-	util, Router,
+	util, router, events,
 	index,
-	about
+	about,
+	test
 ) {
-	var routes = new Router();
+	var routes = router();
+	events.mixin(routes);
 	
 	for (var i=2; i<arguments.length; i++) {
 		routes.get(arguments[i].url, arguments[i].load);
 	}
 	
+	routes.onroute = routes.emit.bind(routes, 'route');
+	
 	routes.init = function(path) {
-		document.body.addEventListener('click', linkHandler);
+		document.body.addEventListener('createTouch' in document ? 'touchstart' : 'click', linkHandler);
 		routes.route(path || location.pathname || location.hash || '/');
 	};
 	
@@ -24,7 +29,7 @@ define([
 		do {
 			href = t.nodeName==='A' && t.getAttribute('href');
 			if (href && href.match(/^\/#/g)) {
-				routes.route(href.replace('#',''));
+				routes.route(href.replace(/^\/#\/*/g,'/'));
 				e.preventDefault();
 				return false;
 			}

@@ -26,20 +26,21 @@
  */
 (function(factory) {
 	if (typeof window.define==='function' && window.define.amd) {
-		window.define(['EventEmitter'], factory);
+		window.define(['events'], factory);
 	}
 	else {
 		factory(window.EventEmitter);
 	}
-}(function(EventEmitter) {
+}(function(events) {
 	/**	@class A URL router.
 	 *	@public
 	 */
 	function Router() {
+		if (!(this instanceof Router)) return new Router();
+		
 		var router = this;
 		this.routes = [];
-		
-		EventEmitter.call(this);
+		events.mixin(this);
 		
 		addEventListener('popstate', function() {
 			route(router, location.pathname || location.hash);
@@ -57,14 +58,10 @@
 				handler : handler
 			});
 			this.routes.sort(sort);
+			return this;
 		}
-		else {
-			history.pushState(0, 0, url);
-			if (this.currentUrl!==url) {
-				route(this, url);
-			}
-		}
-		return this;
+		history.pushState(0, 0, url);
+		return this.currentUrl===url || route(this, url);
 	};
 	
 	/**	Alias of Router#route
@@ -75,15 +72,24 @@
 	
 	/**	Perform routing for the given router+url combo. */
 	function route(router, url) {
-		var route, matches, i;
+		var route, matches, i,
+			old = router.currentRoute;
 		for (i=router.routes.length; i--; ) {
 			route = router.routes[i];
 			matches = exec(url, route.url);
 			if (matches && route.handler(matches)!==false) {
+				if (old && typeof old.unload==='function') {
+					old.unload();
+				}
 				router.currentUrl = url;
-				return;
+				router.currentRoute = route;
+				if (typeof router.onroute==='function') {
+					router.onroute(url);
+				}
+				return true;
 			}
 		}
+		return false;
 	}
 	
 	/**	Check if the given URL matches a route's URL pattern.

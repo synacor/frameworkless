@@ -1,7 +1,8 @@
 require.config({
 	baseUrl : 'js/lib',
 	paths : {
-		app : '../app'
+		app : '../app',
+		templates : '../../templates'
 	}
 });
 

@@ -3,8 +3,27 @@
 	<head>
 		<meta charset="utf8">
 		<title>Frameworkless Demo</title>
+		<link rel="stylesheet" type="text/css" href="css/pure-min.css">
+		<link rel="stylesheet" type="text/css" href="css/side-menu.css">
 	</head>
 	<body>
+		<div id="layout">
+			<a id="menuLink" class="menu-link"><span></span></a>
+			<div id="menu">
+				<div class="pure-menu pure-menu-open">
+					<a class="pure-menu-heading" href="/#/">Home</a>
+					<ul>
+						<li>
+							<a href="/#/about/">About</a>
+							<a href="/#/test/">Test</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		
+			<div id="main"></div>
+		</div>
+		
 		<script src="js/lib/require.js" data-main="js/app.js"></script>
 	</body>
 </html>

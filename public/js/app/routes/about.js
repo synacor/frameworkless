@@ -1,9 +1,9 @@
-define(['util'], function(util) {
+define(['util', 'ford', 'text!templates/about.html'], function(util, $, view) {
 	var page = {
 		url : '/about/',
 		
 		load : function() {
-			document.body.innerHTML = '<h1>About</h1><p>This is the about page.</p>';
+			$('#main').html(view);
 		}
 	};
 	
