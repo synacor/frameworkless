@@ -1,4 +1,5 @@
-/**	util.js - a toolbelt
+/**	@name util
+ *	@namespace Utility functions and essential ES5 polyfills.
  *	@example
  *		var util = require('util');
  *		Array.isArray.bind([])(Object.keys(Object.create({a:' '.trim()})).forEach(util.typeOf));
@@ -26,18 +27,25 @@
 	// Polyfills!
 	
 	if (!String.prototype.trim) {
+		/**	{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/Trim}
+		 *	@name String#trim
+		 */
 		String.prototype.trim = function() {
 			return this.replace(/^\s*.*?\s*$/g, '');
 		};
 	}
 	
 	if (!Array.isArray) {
+		/**	{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray} */
 		Array.isArray = function(obj) {
 			return Object.prototype.toString.call(obj)==='[object Array]';
 		};
 	}
 	
 	if (!Array.prototype.forEach) {
+		/**	{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach}
+		 *	@name Array#forEach
+		 */
 		Array.prototype.forEach = function(iterator, context) {
 			for (var i=0; i<this.length; i++) {
 				iterator.call(context, this[i], i, this);
@@ -46,6 +54,7 @@
 	}
 	
 	if (!Object.keys) {
+		/**	{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys} */
 		Object.keys = function(obj) {
 			var keys=[], i;
 			for (i in obj) {
@@ -58,8 +67,8 @@
 	}
 	
 	if (!Object.create) {
+		/**	{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/create} */
 		Object.create = function(o) {
-			/**	@ignore */
 			function F(){}
 			F.prototype = o;
 			return new F();
@@ -67,10 +76,12 @@
 	}
 	
 	if (!Function.prototype.bind) {
-		Function.prototype.bind = function(context) {
-			var func = this,
-				args = Array.prototype.slice.call(arguments, 1),
-				proxy;
+		/**	{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind}
+		 *	@name Function#bind
+		 */
+		Function.prototype.bind = function(context, args) {
+			var func=this, proxy;
+			args = Array.prototype.slice.call(arguments, 1);
 			if (context===null || context===undefined) {
 				context = this;
 			}
@@ -87,15 +98,10 @@
 	}
 	
 	
-	/**	@namespace Utilities.
-	 *	@name util
-	 *	@public
-	 */
 	util = /** @lends util */ {
 
-		/**	Returns a normalized, lowercase {String} type for the given object. <br />
-		 *	@param {Any} what	An object to inspect the type of
-		 *	@returns {String}	The normalized type string
+		/**	Get the lowercase type for the given object.
+		 *	@returns {String} a type, eg: "array"
 		 */
 		typeOf : function(what) {
 			if (what===undefined) {
@@ -112,13 +118,13 @@
 			}
 		},
 		
-		/** A simple string template function. <br />
-		 *	Replaces <code>{{fields}}</code> with values from a data object.
+		/** Simple string templating: replace <code>{{fields}}</code> with values from a data object.
 		 *	@function
 		 *	@param {String} str			The string to operate on.
 		 *	@param {Object} fields		A key-value field data.
-		 *	@param {Object} [options]	Options.
-		 *	@param {String} [options.prefix]	Only operate on the subset of fields prefixed by the given characters.
+		 *	@param {Object} [options]	Hashmap of options.
+		 *	@param {String} [options.prefix]	If set, only operates on the subset of fields prefixed by the given character sequence. Example: <code>"i18n."</code>
+		 *	@returns {String} result
 		 */
 		template : (function() {
 			var rep = /\{\{\{?([^{}]+)\}?\}\}/gi,
@@ -154,12 +160,11 @@
 			return template;
 		}()),
 		
-		/**	Memoize the given function. <br />
-		 *	This caches the return values of the given function using the first argument as the cache key.
+		/**	Create a memoized proxy of a function.  This caches the return values of the given function using only the <strong>first argument</strong> as a cache key.
 		 *	@function
-		 *	@param {Function} func				A method to memoize.
-		 *	@param {Object} [mem={}]			Optionally pre-supply key-value cache entries.
-		 *	@param {Object} [options]			Options for the cache.
+		 *	@param {Function} func			A function to memoize.
+		 *	@param {Object} [mem={}]		Optionally pre-supply key-value cache entries.
+		 *	@param {Object} [options]		Hashmap of options for the cache.
 		 *	@param {Object} [options.ignoreCase=false]		If <code>true</code>, the cache becomes case-insensitive.
 		 *	@returns {Function} memoized
 		 */
@@ -194,12 +199,11 @@
 			return memoized;
 		},
 		
-		/** Iterate over an object (any type) or Array, calling <iterator> on each member.<br />
-		 *	The iterator function should have the form: <code>function iterator(value, key) { }</code>.<br />
-		 *	To break out of the loop, return false.
-		 *	@param obj						object of any type (including {Array})
-		 *	@param {Function} iterator		A function to be called for each property of the object
-		 *	@returns <obj>	(returns the first argument passed, for convenience)
+		/** Call an iterator function on any Object or Array.<br />
+		 *	<strong>Note:</strong> Return false from <code>iterator</code> to break out of the loop.
+		 *	@param {Array|Object} obj		Any object
+		 *	@param {Function} iterator		A function to call on each entry, gets passed <code>(value, key, obj)</code>.
+		 *	@returns <code>obj</code>
 		 */
 		forEach : function(obj, iterator) {
 			var p;
@@ -220,13 +224,12 @@
 			return obj;
 		},
 		
-		/**	Retrieve a nested property value using dot-notated keys.<br />
-		 *	<strong>Example:</strong><br />
-		 *	<pre class="code">var doc = delve(window, 'frames.0["contentWindow"].document', false);</pre>
-		 *	@private
-		 *	@param {any} obj		An object to descend into
-		 *	@param {String} key		A mixed dot-notated and/or bracket-notated key
-		 *	@param {any} fallback	A value to return if the exact key is not present
+		/**	Retrieve a nested property value using dot-notated keys.
+		 *	@example
+		 *		var doc = delve(window, 'document.body.innerHTML', false);
+		 *	@param {Object} obj		An object to descend into
+		 *	@param {String} key		A dot-notated (and/or bracket-notated) key
+		 *	@param {any} [fallback]	Fallback to return if <code>key</code> is not found in <code>obj</code>
 		 *	@returns The corresponding key's value if it exists, otherwise <code>fallback</code> or undefined.
 		 */
 		delve : function(obj, key, fallback) {
@@ -250,8 +253,8 @@
 			return c;
 		},
 		
-		/** Simple extend() implementation. Extend <base> by copying the object properties 
-		 *	from <code>props</code> (and all additional arguments) onto <code>base</code>.
+		/** Copy own-properties from <code>props</code> onto <code>base</code>.
+		 *	@returns base
 		 */
 		extend : function extend(base, props) {
 			var i, p, obj, len=arguments.length, ctor=util.constructor, bypass;
@@ -269,7 +272,7 @@
 			return base;
 		},
 		
-		/** Simple inheritance.<br />
+		/**	Simple inheritance.<br />
 		 *	<b>Note: Operates directly on baseClass.</b>
 		 *	@param {Function} baseClass		The base (child) class.
 		 *	@param {Function} superClass	The SuperClass to inherit.
@@ -290,7 +293,6 @@
 		 */
 		inherits : function(base, superClass) {
 			var proto = base.prototype;
-			/**	@ignore */
 			function F() {}
 			F.prototype = superClass.prototype;
 			base.prototype = new F();
@@ -300,9 +302,7 @@
 			});
 		},
 		
-		/**	Escape HTML entities within a string.
-		 *	@returns {String} the escaped string
-		 */
+		/**	Escape HTML entities within a string. */
 		htmlEntities : function(str) {
 			var t=str.split(''), i;
 			for (i=t.length; i--; ) {

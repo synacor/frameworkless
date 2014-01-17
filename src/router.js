@@ -1,7 +1,9 @@
-/**	Router.js
+/**	@name router
+ *	@function returns a new {@link router.Router} instance.
+ *	@namespace Instantiable declarative URL router.
  *	@example
- *		var Router = require('router').Router;
- *		var routes = new Router();
+ *		var router = require('router'),
+ *			routes = router();
  *		
  *		// Define a route:
  *		routes.get('/pages/:name/:tab', function(params) {
@@ -33,7 +35,7 @@
 	}
 }(function(events) {
 	/**	@class A URL router.
-	 *	@public
+	 *	@memberOf router
 	 */
 	function Router() {
 		if (!(this instanceof Router)) return new Router();
@@ -64,13 +66,13 @@
 		return this.currentUrl===url || route(this, url);
 	};
 	
-	/**	Alias of Router#route
+	/**	Alias of {@link Router#route}
 	 *	@function
 	 */
 	Router.prototype.get = Router.prototype.route;
 	
 	
-	/**	Perform routing for the given router+url combo. */
+	// Perform routing for the given router+url combo.
 	function route(router, url) {
 		var route, matches, i,
 			old = router.currentRoute;
@@ -92,9 +94,8 @@
 		return false;
 	}
 	
-	/**	Check if the given URL matches a route's URL pattern.
-	 *	@returns key-value matches for a match, or false for a mismatch
-	 */
+	// Check if the given URL matches a route's URL pattern.
+	// @returns key-value matches for a match, or false for a mismatch
 	function exec(url, route) {
 		var matches = {};
 		url = segmentize(url);
@@ -110,19 +111,18 @@
 			}
 		}
 		return matches;
-		//route = route.replace(/(^\/+|\/+$)/g, '');
-		//var reg = new RegExp('^\/?'+route.replace(/\/\:[^\/]+/g)+'\/?$');
 	}
 	
-	/**	Get an Array containing the segments for a given URL */
+	// Get an Array containing the segments for a given URL
 	function segmentize(url) {
 		return url.replace(/(^\/+|\/+$)/g, '').split('/');
 	}
 	
-	/**	Sort in descending order of number of real path segments */
+	// Sort in descending order of number of real path segments
 	function sort(a, b) {
 		return b.url.match(/\/./g).length - b.url.match(/\/./g).length;
 	}
 	
+	Router.Router = Router;
 	return Router;
 }));
