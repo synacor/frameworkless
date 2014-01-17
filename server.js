@@ -3,13 +3,15 @@ var express = require('express'),
 	port = process.env.PORT || 8080;
 
 app.use(express.compress());
+
 // rewrite
 app.use(function(req, res, next) {
-	if (!req.url.match(/\.[a-z]+$/g)) {
+	if (!req.url.match(/(^\/?static\/|\.[a-z]+$)/g)) {
 		req.url = '/';
 	}
 	next();
 });
+
 app.use(express.static('./public'));
 
 app.listen(port, function() {
