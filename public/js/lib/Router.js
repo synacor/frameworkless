@@ -60,7 +60,7 @@
 			this.routes.sort(sort);
 			return this;
 		}
-		history.pushState(0, 0, url);
+		history[handler===true ? 'replaceState' : 'pushState'](0, 0, url);
 		return this.currentUrl===url || route(this, url);
 	};
 	

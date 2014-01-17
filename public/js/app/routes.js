@@ -12,7 +12,7 @@ define([
 	var routes = router();
 	events.mixin(routes);
 	
-	for (var i=2; i<arguments.length; i++) {
+	for (var i=3; i<arguments.length; i++) {
 		routes.get(arguments[i].url, arguments[i].load);
 	}
 	
@@ -20,7 +20,7 @@ define([
 	
 	routes.init = function(path) {
 		document.body.addEventListener('createTouch' in document ? 'touchstart' : 'click', linkHandler);
-		routes.route(path || location.pathname || location.hash || '/');
+		routes.route(path || location.pathname || location.hash || '/', true);
 	};
 	
 	// Automatically route to pages
