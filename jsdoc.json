@@ -1,0 +1,10 @@
+{
+	"opts" : {
+		"template" : "./jsdoc-template",
+		"indexName" : "frameworkless",
+		"mainpagetitle" : "frameworkless"
+	},
+	"plugins" : [
+		"plugins/markdown"
+	]
+}

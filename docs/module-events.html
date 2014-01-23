@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>JSDoc: Module: events</title>
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	
+	<!--[if lt IE 9]>
+		<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+	<link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body data-page-title="Module: events">
+
+	<div id="main">
+		
+		<h1 class="page-title">Module: events</h1>
+		
+		
+
+
+
+<section>
+    
+<header>
+    <h2>
+    events
+    </h2>
+    
+</header>  
+
+<article>
+    <div class="container-overview">
+    
+    
+    
+        
+            <div class="description"><p>Provides a Class and mixin to enable event firing and listening.<br>    If called directly as a function, <code>events()</code> is an alias of events.mixin.</p></div>
+        
+        
+        
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="events.js.html">events.js</a>, <a href="events.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="http://nodejs.org/api/events.html">http://nodejs.org/api/events.html</a></li>
+        </ul>
+    </dd>
+    
+    
+    
+</dl>
+
+        
+        
+            <h3>Example</h3>
+            
+    <pre class="prettyprint"><code>var events = require('events');
+
+// create a default evented object:
+var hub = events();
+
+// or, mix EventEmitter into any existing object:
+var hub = { VERSION:1.0 };
+events(hub);
+
+// Now you can fire and hook events on your object:
+hub.on('hubba', function() {
+	console.log('bubba');
+});
+
+hub.emit('hubba');		// "bubba"</code></pre>
+
+        
+    
+    </div>
+    
+    
+    
+    
+    
+    
+    
+    
+        <h3 class="subsection-title">Classes</h3>
+        
+        <dl>
+            <dt><a href="module-events.EventEmitter.html">EventEmitter</a></dt>
+            <dd></dd>
+        </dl>
+    
+    
+    
+    
+    
+    
+    
+        <h3 class="subsection-title">Methods</h3>
+        
+        <dl>
+            
+<dt>
+    <h4 class="name" id="mixin"><span class="type-signature">&lt;static> </span>mixin<span class="signature">(<span class="optional">obj</span>)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Enhance the given object with <a href="module-events.EventEmitter.html">EventEmitter</a> functionality.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		<th>Argument</th>
+		
+		
+		
+		<th>Default</th>
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>obj</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    {}
+                
+                </td>
+            
+            
+            <td class="description last"><p>The object to enhance. If unspecified, a new object will be used.</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="events.js.html">events.js</a>, <a href="events.js.html#line133">line 133</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <p>Returns the first argument, <code>obj</code>, for convenience.</p>
+</div>
+
+
+
+        
+    
+    
+</dd>
+
+        </dl>
+    
+    
+    
+    
+    
+</article>
+
+</section>  
+
+
+
+
+	</div>
+	
+	<a class="menuLink">Menu</a>
+	
+	<nav>
+		<h2><a href="index.html">frameworkless</a></h2><h3>Modules</h3><ul><li title="module:events"><a href="module-events.html">events</a></li><li title="module:router"><a href="module-router.html">router</a></li><li title="module:util"><a href="module-util.html">util</a></li></ul><h3>Externals</h3><ul><li title="external:Array"><a href="external-Array.html">Array</a></li><li title="external:Function"><a href="external-Function.html">Function</a></li><li title="external:Object"><a href="external-Object.html">Object</a></li><li title="external:String"><a href="external-String.html">String</a></li></ul><h3>Classes</h3><ul><li title="module:events.EventEmitter"><a href="module-events.EventEmitter.html">EventEmitter</a></li><li title="module:router.Router"><a href="module-router.Router.html">Router</a></li></ul><h3>Events</h3><ul><li title="module:router.Router#event:route"><a href="module-router.Router.html#event:route">route</a></li></ul>
+	</nav>
+
+	<footer>
+		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha3</a> on Thu Jan 23 2014 02:06:36 GMT-0500 (EST)
+	</footer>
+
+	<script src="scripts/prettify/prettify.js"></script>
+	<script src="scripts/prettify/lang-css.js"></script>
+	<script src="scripts/enhancements.js"> </script>
+</body>
+</html>
