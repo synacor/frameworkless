@@ -20,9 +20,9 @@ define(['util', 'events', 'ford', 'app/routes'], function(util, events, $, route
 	
 	// Set up routes:
 	app.on('init', routes.init);
-	routes.on('route', function(url) {
+	routes.on('route', function(e) {
 		$('.pure-menu-selected').declassify('pure-menu-selected');
-		$('a[href="/#'+url+'"]').classify('pure-menu-selected');
+		$('a[href="/#'+e.url+'"]').classify('pure-menu-selected');
 	});
 	
 	// lazy init on page load:
