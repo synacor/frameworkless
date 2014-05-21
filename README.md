@@ -25,9 +25,7 @@ Medium Start
 If you're a little more particular about picking up new frameworks *(guilty)*, you may prefer to get things started manually so you can disassemble and play around at your lesure.  
 
 **Clone the QuickStart repo manually:**  
-`git clone git@github.com:synacor/frameworkless.git`  
-*or:*  
-`git clone https://github.com/synacor/frameworkless.git`  
+`git clone git@github.com:frameworkless/frameworkless-boilerplate.git`  
 
 **Take a look around:**  
 
@@ -38,8 +36,8 @@ If you're a little more particular about picking up new frameworks *(guilty)*, y
 ---
 
 
-TCP Slow Start
---------------
+Slow Start
+----------
 Ok, so maybe you are just a bit ... *cautious?*  Yes, you're just cautious, that's all.  Slow and steady wins the race.  It's *definitely* not a fear thing, that would be ridiculous!  
 
 .. right?

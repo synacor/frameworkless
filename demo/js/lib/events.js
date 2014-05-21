@@ -88,6 +88,7 @@
 		 */
 		on : function(type, handler) {
 			this[key].push([type, handler]);
+			return this;
 		},
 		
 		/**	Unsubscribe a function from events of a given <code>type</code>.
@@ -102,6 +103,17 @@
 					return listeners.splice(i, 1), this;
 				}
 			}
+			return this;
+		},
+		
+		/**	Register an event handler that removes itself after invocation.
+		 *	@see module:events.EventEmitter#on
+		 */
+		once : function(type, handler) {
+			return this.on(type, function once() {
+				this.removeListener(type, once);
+				return handler.apply(this, arguments);
+			});
 		},
 		
 		/**	Trigger/emit/fire an event of the given <code>type</code>. All arguments except <code>type</code> get passed on to registered event handlers.
@@ -117,6 +129,7 @@
 					listeners[i][1].apply(this, args);
 				}
 			}
+			return this;
 		}
 	});
 	

@@ -2,25 +2,25 @@ module.exports = function(grunt) {
 
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
-		
+
 		uglify: {
 			main : {
 				files: {
-					'dist/<%= pkg.version %>/min/events.min.js': ['dist/<%= pkg.version %>/events.js'],
-					'dist/<%= pkg.version %>/min/router.min.js': ['dist/<%= pkg.version %>/router.js'],
-					'dist/<%= pkg.version %>/min/util.min.js': ['dist/<%= pkg.version %>/util.js']
+					'dist/min/events.min.js': ['dist/events.js'],
+					'dist/min/router.min.js': ['dist/router.js'],
+					'dist/min/util.min.js': ['dist/util.js']
 				}
 			}
 		},
-		
+
 		copy : {
 			main : {
 				expand : true,
 				cwd : 'src/',
 				src : '**',
-				dest : 'dist/<%= pkg.version %>/'
+				dest : 'dist/'
 			},
-			
+
 			demo : {
 				expand : true,
 				cwd : 'src/',
@@ -28,7 +28,7 @@ module.exports = function(grunt) {
 				dest : 'demo/js/lib/'
 			}
 		},
-		
+
 		jshint : {
 			options : {
 				browser : true
@@ -37,7 +37,7 @@ module.exports = function(grunt) {
 				'src/**/*.js'
 			]
 		},
-		
+
 		jsdoc : {
 			main : {
 				src: [
@@ -51,7 +51,7 @@ module.exports = function(grunt) {
 				}
 			}
 		}
-		
+
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -66,5 +66,5 @@ module.exports = function(grunt) {
 		'copy:demo',
 		'jsdoc:main'
 	]);
-	
+
 };
