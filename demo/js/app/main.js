@@ -1,6 +1,14 @@
 define(['util', 'events', 'ford', 'app/routes'], function(util, events, $, routes) {
 	var app = events();
-
+	
+	$.fn.toggleClass = function(className) {
+		$.iterate(this, function(c) {
+			c = $(c);
+			c[c.hasClass(className)?'declassify':'classify'](className);
+		});
+		return this;
+	};
+	
 	app.on('init', function() {
 		// set up sidebar events
 		$('#menuLink, #menu a').on('click', function() {
@@ -9,15 +17,15 @@ define(['util', 'events', 'ford', 'app/routes'], function(util, events, $, route
 			$('#layout, #menu, #menuLink')[op]('active');
 		});
 	});
-
+	
 	// Set up routes:
 	app.on('init', routes.init);
-
-	// Update the sidebar:
 	routes.on('route', function(e) {
 		$('.pure-menu-selected').declassify('pure-menu-selected');
 		$('a[href="/#'+e.url+'"]').classify('pure-menu-selected');
 	});
-
-	return app.emit('init');
+	
+	// lazy init on page load:
+	app.emit('init');
+	return app;
 });
