@@ -21,7 +21,7 @@ define([
 	
 	routes.init = function(path) {
 		// If a <base href="/" /> is present, have the router account for it:
-		var base = [].pop.call(document.getElementsByTagName('base'));
+		var base = document.getElementsByTagName('base')[0];
 		if (base && base.href) {
 			routes.setBaseUrl(base.getAttribute('href'));
 			console.log('Using baseUrl: ' + routes.baseUrl);
