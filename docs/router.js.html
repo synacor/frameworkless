@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>JSDoc: Source: router.js</title>
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	
+	<!--[if lt IE 9]>
+		<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+	<link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body data-page-title="Source: router.js">
+
+	<div id="main">
+		
+		<h1 class="page-title">Source: router.js</h1>
+		
+		
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**	Instantiable declarative URL router.
+ *	@module router
+ *	@requires events
+ *	
+ *	@example
+ *		&lt;caption>Basic Usage:&lt;/caption>
+ *		
+ *		var router = require('router'),
+ *			routes = router();
+ *		
+ *		// Define a route:
+ *		routes.get('/pages/:name/:tab', function(params) {
+ *			console.log(params.name, params.tab);
+ *		});
+ *		
+ *		// Manually route to a page:
+ *		routes.route('/pages/welcome/about');
+ *
+ *	@example
+ *		&lt;caption>Useful Tip: Automatically route to pages from HTML links.&lt;/caption>
+ *		
+ *		document.body.addEventListener('click', function(e) {
+ *			var t=e.target, href;
+ *			do {
+ *				href = t.nodeName==='A' &amp;&amp; t.getAttribute('href');
+ *				if (href &amp;&amp; href.match(/^\//g)) &amp;&amp; routes.route(href)) {
+ *					e.preventDefault();
+ *					return false;
+ *				}
+ *			} while (t=t.parentNode);
+ *		});
+ */
+(function(factory) {
+	if (typeof window.define==='function' &amp;&amp; window.define.amd) {
+		window.define(['events'], factory);
+	}
+	else {
+		factory(window.EventEmitter);
+	}
+}(function(events) {
+	var EventEmitter = events.EventEmitter || events;
+	
+	/**	A URL router.
+	 *	@class module:router.Router
+	 *	@augments module:events.EventEmitter
+	 *	@fires module:router.Router#route
+	 */
+	function Router() {
+		if (!(this instanceof Router)) return new Router();
+		
+		var router = this;
+		this.routes = [];
+		
+		if (!(this instanceof EventEmitter)) {
+			EventEmitter.call(this);
+		}
+		else if (events &amp;&amp; typeof events.mixin==='function') {
+			events.mixin(this);
+		}
+		
+		addEventListener('popstate', function() {
+			route(router, location.pathname || location.hash);
+		});
+	}
+	
+	try {
+		Router.prototype = new EventEmitter();
+		Router.prototype.constructor = Router;
+	} catch(err) {
+		console.warn(err.message);
+	}
+	
+	
+	/**	Use the given URL fragment as a prefix when parsing and creating all route URLs.
+	 *	@example
+	 *		router.setBaseUrl('/my-app/');
+	 *		
+	 *		// routes are now relative to the Base URL:
+	 *		router.route('/hello', function() {
+	 *			console.log('Hello');
+	 *		});
+	 *		
+	 *		// routing remains relative to the Base URL:
+	 *		router.route('/hello');		// "hello"
+	 */
+	Router.prototype.setBaseUrl = function(baseUrl) {
+		this.baseUrl = baseUrl;
+	};
+	
+	/**	A URL to which all routes are relative.  To change, use {@link module:router.Router#setBaseUrl setBaseUrl}.
+	 *	@string
+	 *	@default "/"
+	 */
+	Router.prototype.baseUrl = '/';
+	
+	
+	/**	Route to &lt;code>url&lt;/code>, or register a &lt;code>handler&lt;/code> to respond to &lt;code>url&lt;/code>.  
+	 *	If &lt;code>handler&lt;/code> is passed:  registers &lt;code>handler&lt;/code> as a route for the given &lt;code>url&lt;/code> pattern.  
+	 *	If &lt;code>handler&lt;/code> is omitted:  Attempts to route to the given &lt;code>url&lt;/code>.
+	 *	@function module:router.Router#route
+	 *	@param {String} url							A URL to route to.
+	 *	@param {Function} [handler]					If given, &lt;code>url&lt;/code> is instead used as a pattern that maps URLs to &lt;code>handler&lt;/code>.
+	 *	@param {Boolean} [relativeToBaseUrl=true]	If &lt;code>false&lt;/code>, the router will attempt to route to &lt;code>url&lt;/code> without taking {@link module:router.Router#baseUrl baseUrl} into account.
+	 *	
+	 *	@example
+	 *		&lt;caption>Registering a route handler:&lt;/caption>
+	 *		
+	 *		router.route('/jobs/:id', function(params) {
+	 *			console.log('Job ID: ' + params.id);
+	 *		});
+	 *	
+	 *	@example
+	 *		&lt;caption>Invoking a route: (uses previous example's route handler)&lt;/caption>
+	 *		
+	 *		var didRoute = router.route('/jobs/1337');
+	 *		console.log( didRoute );   // true
+	 */
+	Router.prototype.route = function(url, handler, relativeToBaseUrl) {
+		if (typeof handler==='function') {
+			this.routes.push({
+				url : url,
+				handler : handler
+			});
+			this.routes.sort(sort);
+			return this;
+		}
+		if (relativeToBaseUrl!==false &amp;&amp; this.baseUrl) {
+			url = this.baseUrl.replace(/\/+$/g, '') + '/' + url.replace(/^\/+/g, '');
+		}
+		history[handler===true ? 'replaceState' : 'pushState'](0, 0, url);
+		return this.currentUrl===url || route(this, url);
+	};
+	
+	/**	Alias of {@link module:router.Router#route}.
+	 *	@function module:router.Router#get
+	 */
+	Router.prototype.get = Router.prototype.route;
+	
+	
+	// Perform routing for the given router+url combo.
+	function route(router, url) {
+		var cur, matches, base, evt, i,
+			rawUrl = url,
+			old = router.currentRoute,
+			emit = router.emit || router.trigger;
+		if (router.baseUrl) {
+			base = strip(router.baseUrl);
+			if (strip(url).substring(0, base.length)!==base) {
+				//console.log('skipping mismatched baseUrl: ', url, router.baseUrl);
+				return false;
+			}
+			url = url.replace(/^\/+/g, '').substring(base.length);
+		}
+		url = '/' + url.replace(/^\/+/g,'');
+		for (i=router.routes.length; i--; ) {
+			cur = router.routes[i];
+			matches = exec(url, cur.url);
+			if (matches &amp;&amp; cur.handler(matches)!==false) {
+				if (old &amp;&amp; typeof old.unload==='function') {
+					old.unload();
+				}
+				router.currentUrl = url;
+				router.currentUrlRaw = rawUrl;
+				router.currentRoute = cur;
+				
+				evt = {
+					url : url,
+					rawUrl : rawUrl
+				};
+				
+				/**	Indicates the current "routed" URL has changed (a new route has become active).
+				 *	@event module:router.Router#route
+				 *	@type {Object}
+				 *	@property {String} url		The new active/current route URL, relative to {@link module:router.Router#baseUrl baseUrl}
+				 *	@property {String} rawUrl	The full active route URL including {@link module:router.Router#baseUrl baseUrl}
+				 */
+				if (typeof emit==='function') {
+					emit.call(router, 'route', evt);
+				}
+				if (typeof router.onroute==='function') {
+					router.onroute(evt);
+				}
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	// Check if the given URL matches a route's URL pattern.
+	// @returns key-value matches for a match, or false for a mismatch
+	function exec(url, route) {
+		var matches = {};
+		url = segmentize(url);
+		route = segmentize(route);
+		for (var i=0; i&lt;Math.max(url.length, route.length); i++) {
+			if (route[i].charAt(0)===':') {
+				matches[route[i].substring(1)] = url[i];
+			}
+			else {
+				if (route[i]!==url[i]) {
+					return false;
+				}
+			}
+		}
+		return matches;
+	}
+	
+	// Remove preceeding and trailing slashes from a URL
+	function strip(url) {
+		return url.replace(/(^\/+|\/+$)/g, '');
+	}
+	
+	// Get an Array containing the segments for a given URL
+	function segmentize(url) {
+		return strip(url).split('/');
+	}
+	
+	// Sort in descending order of number of real path segments
+	function sort(a, b) {
+		return b.url.match(/\/./g).length - b.url.match(/\/./g).length;
+	}
+	
+	
+	/**	If the module is called as a function, returns a new {@link router.Router} instance.
+	 *	@name router.router
+	 *	@function router.router
+	 */
+	
+	
+	Router.Router = Router;
+	return Router;
+}));</code></pre>
+        </article>
+    </section>
+
+
+
+
+	</div>
+	
+	<a class="menuLink">Menu</a>
+	
+	<nav>
+		<h2><a href="index.html">frameworkless</a></h2><h3>Modules</h3><ul><li title="module:events"><a href="module-events.html">events</a></li><li title="module:router"><a href="module-router.html">router</a></li><li title="module:util"><a href="module-util.html">util</a></li></ul><h3>Externals</h3><ul><li title="external:Array"><a href="external-Array.html">Array</a></li><li title="external:Function"><a href="external-Function.html">Function</a></li><li title="external:Object"><a href="external-Object.html">Object</a></li><li title="external:String"><a href="external-String.html">String</a></li></ul><h3>Classes</h3><ul><li title="module:events.EventEmitter"><a href="module-events.EventEmitter.html">EventEmitter</a></li><li title="module:router.Router"><a href="module-router.Router.html">Router</a></li></ul><h3>Events</h3><ul><li title="module:router.Router#event:route"><a href="module-router.Router.html#event:route">route</a></li></ul>
+	</nav>
+
+	<footer>
+		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha3</a> on Wed May 21 2014 13:04:13 GMT-0400 (EDT)
+	</footer>
+
+	<script src="scripts/prettify/prettify.js"></script>
+	<script src="scripts/prettify/lang-css.js"></script>
+	<script src="scripts/enhancements.js"> </script>
+</body>
+</html>
