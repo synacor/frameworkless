@@ -116,7 +116,8 @@
 	 *		console.log( didRoute );   // true
 	 */
 	Router.prototype.route = function(url, handler, relativeToBaseUrl) {
-		if (typeof handler==='function') {
+		var type = typeof handler;
+		if (type==='function' || type==='object') {
 			this.routes.push({
 				url : url,
 				handler : handler
@@ -137,16 +138,23 @@
 	Router.prototype.get = Router.prototype.route;
 	
 	
+	/**	Check if the given URL matches the current active route. */
+	Router.prototype.isUrlActive = function(url) {
+		var r = this.currentRoute;
+		return r && !!exec(url, r.url);
+	};
+	
+	
 	// Perform routing for the given router+url combo.
 	function route(router, url) {
 		var cur, matches, base, evt, i,
 			rawUrl = url,
 			old = router.currentRoute,
-			emit = router.emit || router.trigger;
+			emit = router.emit || router.trigger,
+			handler;
 		if (router.baseUrl) {
 			base = strip(router.baseUrl);
 			if (strip(url).substring(0, base.length)!==base) {
-				//console.log('skipping mismatched baseUrl: ', url, router.baseUrl);
 				return false;
 			}
 			url = url.replace(/^\/+/g, '').substring(base.length);
@@ -155,9 +163,22 @@
 		for (i=router.routes.length; i--; ) {
 			cur = router.routes[i];
 			matches = exec(url, cur.url);
-			if (matches && cur.handler(matches)!==false) {
-				if (old && typeof old.unload==='function') {
-					old.unload();
+			handler = cur.handler;
+			if (typeof handler==='object') {
+				if (router.currentRoute===cur && typeof handler.reload==='function') {
+					handler = handler.reload;
+				}
+				else if (typeof handler.load==='function') {
+					handler = handler.load;
+				}
+				else {
+					console.warn('Handler for '+cur.url+' is malformed (not a function or an object with a `load` method)');
+					continue;
+				}
+			}
+			if (matches && handler.call(cur.handler, matches, router)!==false) {
+				if (old && old!==cur && typeof old.handler.unload==='function') {
+					old.handler.unload();
 				}
 				router.currentUrl = url;
 				router.currentUrlRaw = rawUrl;
@@ -217,7 +238,7 @@
 	
 	// Sort in descending order of number of real path segments
 	function sort(a, b) {
-		return b.url.match(/\/./g).length - b.url.match(/\/./g).length;
+		return segmentize(b.url).length - segmentize(a.url).length;
 	}
 	
 	
