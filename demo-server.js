@@ -1,8 +1,10 @@
 var express = require('express'),
+	compress = require('compression'),
+	serveStatic = require('serve-static'),
 	app = express(),
 	port = process.env.PORT || 8080;
 
-app.use(express.compress());
+app.use(compress());
 
 // rewrite
 app.use(function(req, res, next) {
@@ -12,9 +14,9 @@ app.use(function(req, res, next) {
 	next();
 });
 
-app.use(express.static('demo/'));
+app.use(serveStatic('demo/'));
 
-app.use('/docs', express.static('docs/'));
+app.use('/docs', serveStatic('docs/'));
 
 app.listen(port, function() {
 	console.log('Server listening on localhost:'+port);
