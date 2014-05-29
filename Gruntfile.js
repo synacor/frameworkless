@@ -50,14 +50,41 @@ module.exports = function(grunt) {
 					configure : 'jsdoc.json'
 				}
 			}
-		}
+		},
 
+		mocha : {
+			test : {
+				options : {
+					run : true,
+					reporter : 'Spec',
+					urls : [
+						'test/index.html'
+					]
+				}
+			}
+		},
+
+		watch : {
+			options : {
+				interrupt : true
+			},
+			src : {
+				files : ['src/**/*.js'],
+				tasks : ['default']
+			},
+			test : {
+				files : ['test/**/*'],
+				tasks : ['test']
+			}
+		}
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-jsdoc');
+	grunt.loadNpmTasks('grunt-mocha');
+	grunt.loadNpmTasks('grunt-contrib-watch');
 
 	grunt.registerTask('default', [
 		'jshint:main',
@@ -65,6 +92,13 @@ module.exports = function(grunt) {
 		'uglify:main',
 		'copy:demo',
 		'jsdoc:main'
+	]);
+
+	grunt.registerTask('test', ['mocha:test'])
+
+	grunt.registerTask('build-watch', [
+		'default',
+		'watch'
 	]);
 
 };
