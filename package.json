@@ -31,6 +31,7 @@
     "grunt-jsdoc": "^0.5.4",
     "jsdoc": "^3.3.0-alpha5",
     "grunt-contrib-watch": "^0.6.1",
-    "grunt-mocha": "^0.4.10"
+    "grunt-mocha": "^0.4.10",
+    "grunt-cli": "^0.1.13"
   }
 }
