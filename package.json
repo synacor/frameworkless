@@ -4,7 +4,7 @@
   "description": "Frameworkless ============= A simple, flexible framework for developing medium complexity web application frontends.",
   "main": "demo/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "grunt test",
     "start": "node demo-server.js"
   },
   "repository": {
