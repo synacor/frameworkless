@@ -4,7 +4,7 @@
 
 Frameworkless
 =============
-A simple, flexible framework for developing medium complexity web application frontends.  
+A simple, flexible framework for developing medium-complexity web application front-ends.  
 
 
 ---
