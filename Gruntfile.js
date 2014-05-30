@@ -59,7 +59,7 @@ module.exports = function(grunt) {
 					reporter : process.env.MOCHA_REPORTER || (process.env.ENVIRONMENT==='ci' ? 'XUnit' : 'Spec')
 				},
 				src : ['test/**/*.html'],
-				dest: './test-reports/default.xml'
+				dest : (process.env.ENVIRONMENT==='ci' || process.env.OUTPUT_TESTS) && './test-reports/default.xml'
 			}
 		},
 
