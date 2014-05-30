@@ -56,12 +56,10 @@ module.exports = function(grunt) {
 			test : {
 				options : {
 					run : true,
-					reporter : process.env.MOCHA_REPORTER || (process.env.ENVIRONMENT==='ci' ? 'XUnit' : 'Spec'),
-					urls : [
-						'test/index.html'
-					],
-					dest: './test-reports/default.xml'
-				}
+					reporter : process.env.MOCHA_REPORTER || (process.env.ENVIRONMENT==='ci' ? 'XUnit' : 'Spec')
+				},
+				src : ['test/**/*.html'],
+				dest: './test-reports/default.xml'
 			}
 		},
 
