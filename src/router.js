@@ -117,6 +117,10 @@
 	 */
 	Router.prototype.route = function(url, handler, relativeToBaseUrl) {
 		var type = typeof handler;
+        if (typeof url==='object' && url.url) {
+            handler = url;
+            url = url.url;
+        }
 		if (type==='function' || type==='object') {
 			this.routes.push({
 				url : url,
