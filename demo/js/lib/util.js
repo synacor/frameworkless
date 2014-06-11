@@ -2,10 +2,10 @@
  *	@module util
  *	@example
  *		<caption>Using Polyfills:</caption>
- *		
+ *
  *		// Including util as a dependency adds the polyfills:
  *		var util = require('util');
- *		
+ *
  *		// Now you can use some ES5 stuff everywhere:
  *		Array.isArray.bind([])(Object.keys(Object.create({a:' '.trim()})).forEach(util.typeOf));
  */
@@ -20,33 +20,33 @@
 	var entityMap = {'&':'amp','<':'lt','>':'gt','"':'quot'},
 		uuids = 0,
 		util;
-	
+
 	/**	The built in String object.
 	 *	@name String
 	 *	@external String
 	 *	@see {@link https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String String}
 	 */
-	
+
 	/**	The built in Object object.
 	 *	@name Object
 	 *	@external Object
 	 *	@see {@link https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object Object}
 	 */
-	 
+
 	/**	The built in Array object.
 	 *	@name Array
 	 *	@external Array
 	 *	@see {@link https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array Array}
 	 */
-	 
+
 	/**	The built in Function object.
 	 *	@name Function
 	 *	@external Function
 	 *	@see {@link https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function Function}
 	 */
-	 
+
 	// Polyfills!
-	
+
 	if (!String.prototype.trim) {
 		/**	Remove whitespace from the beginning and end of a string.
 		 *	@function external:String#trim
@@ -56,7 +56,7 @@
 			return this.replace(/^\s*.*?\s*$/g, '');
 		};
 	}
-	
+
 	if (!Array.isArray) {
 		/**	Check if the given value is an Array.
 		 *	@function external:Array.isArray
@@ -66,7 +66,7 @@
 			return Object.prototype.toString.call(obj)==='[object Array]';
 		};
 	}
-	
+
 	if (!Array.prototype.forEach) {
 		/**	Call <code>iterator</code> on each value of an Array.
 		 *	@param {Function} iterator		Gets passed <code>(value, index, array)</code>.
@@ -80,7 +80,7 @@
 			}
 		};
 	}
-	
+
 	if (!Object.keys) {
 		/**	Get an Array of the given object's own-property keys.
 		 *	@function external:Object.keys
@@ -96,7 +96,7 @@
 			return keys;
 		};
 	}
-	
+
 	if (!Object.create) {
 		/**	Create a new object with the given reference object as its prototype.
 		 *	@function external:Object.create
@@ -108,7 +108,7 @@
 			return new F();
 		};
 	}
-	
+
 	if (!Function.prototype.bind) {
 		/**	Bind a function to the given context and any given arguments.
 		 *	@function external:Function#bind
@@ -133,14 +133,14 @@
 			return proxy;
 		};
 	}
-	
-	
+
+
 	util = /** @lends module:util */ {
 
 		/**	Get the type of a given value.
 		 *	@param {Any} value		A value to check the type of
 		 *	@returns {String} A normalized lowercase type name.
-		 *	
+		 *
 		 *	@example
 		 *		util.typeOf( [] )         // array
 		 *		util.typeOf( {} )         // object
@@ -165,7 +165,7 @@
 			}
 			return (typeof value || 'object').toLowerCase();
 		},
-		
+
 		/** Simple string templating: replace <code>{{fields}}</code> with values from a data object.
 		 *	@function
 		 *	@param {String} str			The string to operate on.
@@ -173,10 +173,10 @@
 		 *	@param {Object} [options]	Hashmap of options.
 		 *	@param {String} [options.prefix]	If set, only operates on the subset of fields prefixed by the given character sequence. Example: <code>"i18n."</code>
 		 *	@returns {String} The tempalted string.
-		 *	
+		 *
 		 *	@example
 		 *		<caption>prints the string: Hello Jason, your email is Fake &lt;not-a@real.email&gt;</caption>
-		 *		
+		 *
 		 *		util.template('Hello {{user.name}}, your email is {{{user.email}}}.', {
 		 *			user : {
 		 *				name : 'Jason',
@@ -187,37 +187,40 @@
 		template : (function() {
 			var rep = /\{\{\{?([^{}]+)\}?\}\}/gi,
 				currentOptions,
-				current;
-		
+				current,
+                noopt = {};
+
 			function template(str, fields, options) {
 				current = fields;
 				currentOptions = options;
 				return str.replace(rep, field);
 			}
-		
+
 			function field(str, token) {
-				var opt = currentOptions,
+				var opt = currentOptions || noopt,
 					value;
-				if (opt && opt.prefix) {
+				if (opt.prefix) {
 					if (token.substring(0, opt.prefix.length)!==opt.prefix) {
 						return str;
 					}
 					token = token.substring(opt.prefix.length);
 				}
-				//value = current.hasOwnProperty(token) && current[token];
 				value = util.delve(current, token);
 				if (value) {
-					if (str.charAt(2)==='{') {
+					if (str.charAt(2)!=='{') {
 						value = util.htmlEntities(value);
 					}
 					return value;
 				}
+                if (opt.empty!==false) {
+                    str = opt.empty || '';
+                }
 				return str;
 			}
-		
+
 			return template;
 		}()),
-		
+
 		/**	Create a memoized proxy of a function.  This caches the return values of the given function using only the <strong>first argument</strong> as a cache key.
 		 *	@function
 		 *	@param {Function} func			A function to memoize.
@@ -225,16 +228,16 @@
 		 *	@param {Object} [options]		Hashmap of options for the cache.
 		 *	@param {Object} [options.ignoreCase=false]		If <code>true</code>, the cache becomes case-insensitive.
 		 *	@returns {Function} A memoized version of <code>func</code>.
-		 *	
+		 *
 		 *	@example
 		 *		// Executes getElementById each time it is called:
 		 *		function find(id) {
 		 *			return document.getElementById(id);
 		 *		}
-		 *		
+		 *
 		 *		// Wrap find() in a cache:
 		 *		var fastFind = util.memoize(find);
-		 *		
+		 *
 		 *		find('test') === fastFind('test');   // true
 		 */
 		memoize : function(func, mem, options) {
@@ -267,13 +270,13 @@
 			};
 			return memoized;
 		},
-		
+
 		/** Call an iterator function on any Object or Array.<br />
 		 *	<strong>Note:</strong> Return false from <code>iterator</code> to break out of the loop.
 		 *	@param {Array|Object} obj		Any object
 		 *	@param {Function} iterator		A function to call on each entry, gets passed <code>(value, key, obj)</code>.
 		 *	@returns {Object} Returns the first arguments, <code>obj</code>, for convenience.
-		 *	
+		 *
 		 *	@example
 		 *		util.forEach(window, function(value, key) {
 		 *			console.log(value, key);
@@ -297,29 +300,29 @@
 			}
 			return obj;
 		},
-		
+
 		/**	Retrieve a nested property value using dot-notated keys.
 		 *	@param {Object} obj		An object to descend into
 		 *	@param {String} key		A dot-notated (and/or bracket-notated) key
 		 *	@param {any} [fallback]	Fallback to return if <code>key</code> is not found in <code>obj</code>
 		 *	@returns The corresponding key's value if it exists, otherwise <code>fallback</code> or <code>undefined</code>.
-		 *	
+		 *
 		 *	@example
 		 *		<caption>Basic Usage:</caption>
-		 *		
+		 *
 		 *		var res = {
 		 *			json : {
 		 *				success : true,
 		 *				message : 'Thing completed.'
 		 *			}
 		 *		};
-		 *		
+		 *
 		 *		var msg = util.delve(res, 'json.message');
 		 *		console.log(msg);		// 'Thing completed.'
-		 *	
+		 *
 		 *	@example
 		 *		<caption>DOM Traversal:</caption>
-		 *		
+		 *
 		 *		document.body.innerHTML = '<span>hello</span>';
 		 *		var text = util.delve(window, 'document.body.childNodes.0.textContent');
 		 *		console.log(text);		// "hello"
@@ -344,12 +347,12 @@
 			}
 			return c;
 		},
-		
+
 		/** Copy own-properties from <code>props</code> onto <code>base</code>.
 		 *	@param {Object} base		An object onto which properties should be copied
 		 *	@param {Object} props*		The rest of the arguments will have their properties copied onto <code>base</code>
 		 *	@returns base
-		 *	
+		 *
 		 *	@example
 		 *		<caption>Basic Usage:</caption>
 		 *		var obj1 = {
@@ -360,36 +363,36 @@
 		 *				test : 'bar',
 		 *				obj2prop : 'obj2'
 		 *			};
-		 *		
+		 *
 		 *		// copy properties from obj2 onto obj1:
 		 *		util.extend(obj1, obj2);
-		 *		
+		 *
 		 *		console.log(obj1.test);
 		 *		//	{
 		 *		//		test : "bar",
 		 *		//		obj1prop : "obj1",
 		 *		//		obj2prop : "obj2"
 		 *		//	}
-		 *	
+		 *
 		 *	@example
 		 *		<caption>Shallow Clone:</caption>
 		 *		var orig = {
 		 *			foo : 'bar'
 		 *		};
-		 *		
+		 *
 		 *		var clone = util.extend({}, orig);
-		 *		
+		 *
 		 *		console.log(clone === orig);   // false
 		 *		console.log(clone.foo === orig.foo);   // true
-		 *	
+		 *
 		 *	@example
 		 *		<caption>Tip: Cheater constructor options</caption>
-		 *		
+		 *
 		 *		function MyClass(options) {
 		 *			// copy options onto the instance:
 		 *			util.extend(this, options || {});
 		 *		}
-		 *		
+		 *
 		 *		new MyClass({
 		 *			unique : true
 		 *		});
@@ -409,7 +412,7 @@
 			}
 			return base;
 		},
-		
+
 		/**	Simple inheritance.<br />
 		 *	<b>Note: Operates directly on baseClass.</b>
 		 *	@param {Function} baseClass		The base (child) class.
@@ -420,17 +423,17 @@
 		 *			this.sound = "";
 		 *		}
 		 *		Animal.prototype.type = 'Unknown';
-		 *		
+		 *
 		 *		function Cat() {
 		 *			// call parent constructor:
 		 *			Animal.call(this);
 		 *			this.sound = "mew";
 		 *		}
 		 *		Cat.prototype.type = 'Feline';
-		 *		
+		 *
 		 *		// Make Cat inherit from Animal:
 		 *		util.inherits(Cat, Animal);
-		 *		
+		 *
 		 *		var cat = new Cat();
 		 *		console.log(cat.sound);		// "mew"
 		 *		console.log(cat.type);		// "Feline"
@@ -445,7 +448,7 @@
 				__super : superClass
 			});
 		},
-		
+
 		/**	Escape HTML entities within a string.
 		 *	@param {String} str		The string to entity-encode
 		 *	@returns {String} An entity-encoded version of the input string, <code>str</code>.
@@ -459,7 +462,7 @@
 			}
 			return t.join('');
 		},
-		
+
 		/** Generate an unique ID (unique only to the page), with optional prefix.
 		 *	@param {String} [prefix=""]		Optionally prefix the returned ID with a given string.
 		 *	@returns {String} A uuid String.
@@ -467,15 +470,15 @@
 		uniqueId : function(prefix) {
 			return (prefix || '') + (++uuids);
 		}
-	
+
 	};
-	
+
 	/**	Alias of {@link util.forEach}.
 	 *	@function module:util.foreach
 	 *	@deprecated
 	 *	@ignore
 	 */
 	util.foreach = util.forEach;
-	
+
 	return util;
 }));
