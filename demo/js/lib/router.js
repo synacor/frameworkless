@@ -242,7 +242,7 @@
 		route = segmentize(route);
 		for (var i=0; i<Math.max(url.length, route.length); i++) {
 			if (route[i] && route[i].charAt(0)===':') {
-				matches[route[i].substring(1)] = url[i];
+				matches[route[i].substring(1)] = decodeURIComponent(url[i]);
 			}
 			else {
 				if (route[i]!==url[i]) {
