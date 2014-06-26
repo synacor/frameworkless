@@ -35,7 +35,8 @@ module.exports = function(grunt) {
 			},
 			main : [
 				'src/**/*.js',
-				'!src/test/**/*.js'
+				'!src/test/**/*.js',
+				'!src/demo/**/*.js'
 			]
 		},
 
