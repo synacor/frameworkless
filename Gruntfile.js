@@ -34,7 +34,8 @@ module.exports = function(grunt) {
 				browser : true
 			},
 			main : [
-				'src/**/*.js'
+				'src/**/*.js',
+				'!src/test/**/*.js'
 			]
 		},
 
