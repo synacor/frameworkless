@@ -1,6 +1,6 @@
 {
   "name": "frameworkless",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Frameworkless ============= A simple, flexible framework for developing medium complexity web application frontends.",
   "main": "demo/server.js",
   "scripts": {

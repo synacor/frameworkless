@@ -138,7 +138,8 @@
 			return this;
 		}
 		if (relativeToBaseUrl!==false && this.baseUrl) {
-			url = this.baseUrl.replace(/(?:^\/+|\/+(\?|$))/g, '$1') + '/' + url.replace(/^\/+/g, '');
+			// Easy out: allow the slashes to concatenate, then normalize them
+			url = ('/' + this.baseUrl + '/' + url).replace(/\/{2,}/g, '/');
 		}
 		history[handler===true ? 'replaceState' : 'pushState'](0, 0, url);
 		return this.currentUrlFull===url || route(this, url);
