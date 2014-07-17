@@ -1,0 +1,34 @@
+{
+  "name": "frameworkless",
+  "version": "0.1.7",
+  "authors": [
+    "Jason Miller <jasonmiller@synacor.com>"
+  ],
+  "description": "A simple, flexible framework for developing medium complexity web application frontends.",
+  "main": "dist/events.js, dist/router.js, dist/util.js",
+  "moduleType": [
+    "amd",
+    "globals"
+  ],
+  "keywords": [
+    "events",
+    "router",
+    "util"
+  ],
+  "license": "MIT",
+  "homepage": "https://stash.corp.synacor.com/projects/APLA/repos/frameworkless/browse",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "demo",
+    "docs",
+    "jsdoc-template",
+    "src",
+    "dist/min",
+    "jsdoc.json",
+    "demo-server.js"
+  ]
+}
