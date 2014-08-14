@@ -59,7 +59,7 @@
 		}
 
 		addEventListener('popstate', function() {
-			route(router, location.pathname ? (location.pathname + location.search || '') : location.hash);
+			route(router, getPath());
 		});
 	}
 
@@ -76,7 +76,7 @@
      *	@returns {Boolean} `true` if routing succeeded, `false` on error.
      */
     Router.prototype.init = function(path) {
-		return this.route(path || (location.pathname && (location.pathname + location.search)) || location.hash || '/', true, false);
+		return this.route(getPath(path), true, false);
     };
 
 	/**	Use the given URL fragment as a prefix when parsing and creating all route URLs.
@@ -252,6 +252,11 @@
 			}
 		}
 		return matches;
+	}
+
+	// Obtain and normalize the page's current URL, optionally using a given one
+	function getPath(path) {
+		return (path || (location.pathname.substring(1) + location.search) || location.hash.substring(1) || '').replace(/^\/*(#\/)?/g, '/');
 	}
 
 	// Remove preceeding and trailing slashes from a URL
