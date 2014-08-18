@@ -19,7 +19,7 @@
 }(function() {
 	var entityMap = {'&':'amp','<':'lt','>':'gt','"':'quot'},
 		uuids = 0,
-		util;
+		exports;
 
 	/**	The built in String object.
 	 *	@name String
@@ -135,7 +135,7 @@
 	}
 
 
-	util = /** @lends module:util */ {
+	exports = {
 
 		/**	Get the type of a given value.
 		 *	@param {Any} value		A value to check the type of
@@ -188,7 +188,7 @@
 			var rep = /\{\{\{?([^{}]+)\}?\}\}/gi,
 				currentOptions,
 				current,
-                noopt = {};
+				noopt = {};
 
 			function template(str, fields, options) {
 				current = fields;
@@ -205,16 +205,16 @@
 					}
 					token = token.substring(opt.prefix.length);
 				}
-				value = util.delve(current, token);
+				value = exports.delve(current, token);
 				if (value) {
 					if (str.charAt(2)!=='{') {
-						value = util.htmlEntities(value);
+						value = exports.htmlEntities(value);
 					}
 					return value;
 				}
-                if (opt.empty!==false) {
-                    str = opt.empty || '';
-                }
+				if (opt.empty!==false) {
+					str = opt.empty || '';
+				}
 				return str;
 			}
 
@@ -398,11 +398,11 @@
 		 *		});
 		 */
 		extend : function extend(base, props) {
-			var i, p, obj, len=arguments.length, ctor=util.constructor, bypass;
+			var i, p, obj, len=arguments.length, ctor=exports.constructor, bypass;
 			for (i=1; i<len; i++) {
 				obj = arguments[i];
 				if (obj!==null && obj!==undefined) {
-					bypass = obj.constructor===util.constructor;
+					bypass = obj.constructor===exports.constructor;
 					for (p in obj) {
 						if (bypass || obj.hasOwnProperty(p)) {
 							base[p] = obj[p];
@@ -443,7 +443,7 @@
 			function F() {}
 			F.prototype = superClass.prototype;
 			base.prototype = new F();
-			util.extend(base.prototype, proto, {
+			exports.extend(base.prototype, proto, {
 				constructor : base,
 				__super : superClass
 			});
@@ -478,7 +478,7 @@
 	 *	@deprecated
 	 *	@ignore
 	 */
-	util.foreach = util.forEach;
+	exports.foreach = exports.forEach;
 
-	return util;
+	return exports;
 }));

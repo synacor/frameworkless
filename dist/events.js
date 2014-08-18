@@ -1,5 +1,5 @@
 /**	Provides a Class and mixin to enable event firing and listening.
- *	If called directly as a function, <code>events()</code> is an alias of {@link events.mixin}.
+ *	If called directly as a function, `events()` is an alias of {@link events.mixin}.
  *	@module events
  *	@see http://nodejs.org/api/events.html
  *	@example
@@ -38,9 +38,9 @@
 		return t;
 	}
 
-    function normalizeType(type) {
-        return String(type).toLowerCase();
-    }
+	function normalizeType(type) {
+		return String(type).toLowerCase();
+	}
 
 
 	/**	Add events to a Class by inheriting from EventEmitter, or instance it to keep event-related methods in the prototype of an object.
@@ -85,8 +85,8 @@
 	var proto = EventEmitter.prototype;
 	copy(proto, /** @lends module:events.EventEmitter# */ {
 
-		/**	Register a Function to be called in response to events of a given <code>type</code>.
-		 *	*Note:* Arguments to <code>handler</code> are the arguments passed to {@link EventEmitter#emit}, excluding <code>type</code>.
+		/**	Register a Function to be called in response to events of a given `type`.
+		 *	*Note:* Arguments to `handler` are the arguments passed to {@link EventEmitter#emit}, excluding `type`.
 		 *	@param {String} type		The event type to listen for
 		 *	@param {Function} handler	A function to call in response to the event being fired
 		 */
@@ -95,18 +95,18 @@
 			return this;
 		},
 
-		/**	Unsubscribe a function from events of a given <code>type</code>.
-		 *	@param {String} type		The event type from which <code>handler</code> should be unsubscribed
-		 *	@param {Function} handler	A reference to the Function to be unsubscribed from <code>type</code> events
+		/**	Unsubscribe a function from events of a given `type`.
+		 *	@param {String} type		The event type from which `handler` should be unsubscribed
+		 *	@param {Function} handler	A reference to the Function to be unsubscribed from `type` events
 		 */
 		removeListener : function(type, handler) {
 			var listeners = this[key],
 				i = listeners.length;
-            type = normalizeType(type);
+			type = normalizeType(type);
 			while (i--) {
 				if (listeners[i][0]===type && listeners[i][1]===handler) {
 					listeners.splice(i, 1);
-                    break;
+					break;
 				}
 			}
 			return this;
@@ -116,21 +116,21 @@
 		 *	@see module:events.EventEmitter#on
 		 */
 		once : function(type, handler) {
-            return this.on(type, function once() {
+			return this.on(type, function once() {
 				this.removeListener(type, once);
 				return handler.apply(this, arguments);
 			});
 		},
 
-		/**	Trigger/emit/fire an event of the given <code>type</code>. All arguments except <code>type</code> get passed on to registered event handlers.
-		 *	@param {String} type		The event type from which <code>handler</code> should be unsubscribed
+		/**	Trigger/emit/fire an event of the given `type`. All arguments except `type` get passed on to registered event handlers.
+		 *	@param {String} type		The event type from which `handler` should be unsubscribed
 		 *	@param {Any} [args*]		Any arguments to pass to all handlers
 		 */
 		emit : function(type) {
 			var args = [].slice.call(arguments,1),
 				listeners = this[key],
 				i = listeners.length;
-            type = normalizeType(type);
+			type = normalizeType(type);
 			while (i--) {
 				if (listeners[i][0]===type) {
 					listeners[i][1].apply(this, args);
@@ -150,9 +150,15 @@
 	 */
 	proto.trigger = proto.emit;
 
+	/**	If the module is called as a function, returns a new {@link module:events.EventEmitter EventEmitter} instance.
+	 *	@param {Object} [obj]		An object to enhance. If unspecified, a new object will be used.
+	 *	@returns Returns the enhanced `obj` or new {@link module:events.EventEmitter EventEmitter} instance.
+	 *	@function module:events.events
+	 */
+
 	/**	Enhance the given object with {@link module:events.EventEmitter EventEmitter} functionality.
-	 *	@param {Object} [obj={}]		The object to enhance. If unspecified, a new object will be used.
-	 *	@returns Returns the first argument, <code>obj</code>, for convenience.
+	 *	@param {Object} [obj]		The object to enhance. If unspecified, a new object will be used.
+	 *	@returns Returns the enhanced `obj` or new {@link module:events.EventEmitter EventEmitter} instance.
 	 *	@function module:events.mixin
 	 */
 	EventEmitter.mixin = EventEmitter.EventEmitter = EventEmitter;

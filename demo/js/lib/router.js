@@ -72,12 +72,12 @@
 
 	/**	Initialize the router with the page's current URL,
 	 *	without adding a history entry and taking any baseUrl into account.
-     *	@param {String} [path=auto]		Override the routing path. Defaults to the page's URL.
-     *	@returns {Boolean} `true` if routing succeeded, `false` on error.
-     */
-    Router.prototype.init = function(path) {
+	 *	@param {String} [path=auto]		Override the routing path. Defaults to the page's URL.
+	 *	@returns {Boolean} `true` if routing succeeded, `false` on error.
+	 */
+	Router.prototype.init = function(path) {
 		return this.route(getPath(path), true, false);
-    };
+	};
 
 	/**	Use the given URL fragment as a prefix when parsing and creating all route URLs.
 	 *	@example
@@ -125,10 +125,10 @@
 	 */
 	Router.prototype.route = function(url, handler, relativeToBaseUrl) {
 		var type = typeof handler;
-        if (typeof url==='object' && url.url) {
-            handler = url;
-            url = url.url;
-        }
+		if (typeof url==='object' && url.url) {
+			handler = url;
+			url = url.url;
+		}
 		if (type==='function' || type==='object') {
 			this.routes.push({
 				url : url,
@@ -163,18 +163,18 @@
 		var rawUrl = url,
 			old = router.currentRoute,
 			emit = router.emit || router.trigger,
-            query = {},
+			query = {},
 			search, handler, cur, matches, base, evt, p, i;
-        matches = url.split('?');
-        if (matches.length>1) {
-            url = matches[0];
-            search = matches.slice(1).join('?');
-            p = search.split('&');
-            for (i=0; i<p.length; i++) {
-                matches = p[i].split('=');
-                query[ decodeURIComponent(matches[0]) ] = decodeURIComponent(matches.slice(1).join('='));
-            }
-        }
+		matches = url.split('?');
+		if (matches.length>1) {
+			url = matches[0];
+			search = matches.slice(1).join('?');
+			p = search.split('&');
+			for (i=0; i<p.length; i++) {
+				matches = p[i].split('=');
+				query[ decodeURIComponent(matches[0]) ] = decodeURIComponent(matches.slice(1).join('='));
+			}
+		}
 		if (router.baseUrl) {
 			base = strip(router.baseUrl);
 			if (strip(url).substring(0, base.length)!==base) {
@@ -186,8 +186,8 @@
 		for (i=router.routes.length; i--; ) {
 			cur = router.routes[i];
 			if ( (matches = exec(url, cur.url)) ) {
-                matches.$query = query;
-            }
+				matches.$query = query;
+			}
 			handler = cur.handler;
 			if (typeof handler==='object') {
 				if (router.currentRoute===cur && typeof handler.reload==='function') {
@@ -213,8 +213,8 @@
 				evt = {
 					url : url,
 					rawUrl : rawUrl,
-                    params : matches,
-                    query : query
+					params : matches,
+					query : query
 				};
 
 				/**	Indicates the current "routed" URL has changed (a new route has become active).
@@ -275,9 +275,9 @@
 	}
 
 
-	/**	If the module is called as a function, returns a new {@link router.Router} instance.
-	 *	@name router.router
-	 *	@function router.router
+	/**	If the module is called as a function, returns a new {@link module:router.Router Router} instance.
+	 *	@name module:router.router
+	 *	@function
 	 */
 
 
