@@ -57,6 +57,9 @@ module.exports = function(grunt) {
 		mocha : {
 			test : {
 				options : {
+					//log : true,
+					//'remote-debugger-port' : 9001,
+					//'remote-debugger-autorun' : 'yes',
 					run : true,
 					reporter : process.env.MOCHA_REPORTER || (process.env.ENVIRONMENT==='ci' ? 'XUnit' : 'Spec')
 				},

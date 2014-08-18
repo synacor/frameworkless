@@ -12,6 +12,353 @@ describe('util', function() {
 	});
 
 
+	describe('.typeOf()', function() {
+		it('should be a function', function() {
+			expect(util).to.have.property('typeOf');
+			expect(util.typeOf).to.be.a('function');
+		});
+
+		it('should return "undefined" for undefined', function() {
+			expect(util.typeOf(undefined)).to.equal('undefined');
+			expect(util.typeOf()).to.equal('undefined');
+		});
+
+		it('should return "null" for null', function() {
+			expect(util.typeOf(null)).to.equal('null');
+		});
+
+		it('should return "array" for Arrays', function() {
+			expect(util.typeOf([])).to.equal('array');
+			expect(util.typeOf(new Array())).to.equal('array');
+			expect(util.typeOf(arguments)).not.to.equal('array');
+		});
+
+		it('should return "regexp" for regular expressions', function() {
+			expect(util.typeOf(/a/g)).to.equal('regexp');
+			expect(util.typeOf(new RegExp())).to.equal('regexp');
+		});
+
+		it('should return "string" for Strings', function() {
+			expect(util.typeOf('')).to.equal('string');
+			expect(util.typeOf(new String())).to.equal('string');
+		});
+
+		it('should return "number" for Numbers', function() {
+			expect(util.typeOf(1)).to.equal('number');
+			expect(util.typeOf(1.1)).to.equal('number');
+			expect(util.typeOf(new Number())).to.equal('number');
+		});
+
+		it('should return "boolean" for Booleans', function() {
+			expect(util.typeOf(true)).to.equal('boolean');
+			expect(util.typeOf(false)).to.equal('boolean');
+			expect(util.typeOf(new Boolean())).to.equal('boolean');
+		});
+
+		it('should return "function" for Functions', function() {
+			expect(util.typeOf(function(){})).to.equal('function');
+			expect(util.typeOf(new Function())).to.equal('function');
+			expect(util.typeOf(Math.sin)).to.equal('function');
+		});
+	});
+
+
+	describe('.template()', function() {
+		it('should be a function', function() {
+			expect(util).to.have.property('template');
+			expect(util.template).to.be.a('function');
+		});
+
+		it('should inject {{fields}}', function() {
+			var fields = {
+				foo : 'bar',
+				baz : 'bat'
+			};
+			expect(util.template('{{foo}}{{baz}}', fields)).to.equal('barbat');
+			expect(util.template('\n{{foo}}\n{{baz}}\n', fields)).to.equal('\nbar\nbat\n');
+		});
+
+		it('should encode HTML characters in {{.}} fields', function() {
+			var fields = {
+					foo : '<>&"'
+				},
+				encoded = '&lt;&gt;&amp;&quot;';
+			expect(util.template('{{foo}}', fields)).to.equal(encoded);
+		});
+
+		it('should not encode HTML characters in {{{.}}} fields', function() {
+			var fields = {
+				foo : '<>&"'
+			};
+			expect(util.template('{{{foo}}}', fields)).to.equal(fields.foo);
+		});
+
+		it('should replace missing fields with (opt.empty || "")', function() {
+			expect(util.template('{{foo}}', {})).to.equal('');
+			expect(util.template('{{foo}}')).to.equal('');
+			expect(util.template('{{foo}}', {}, {empty:false})).to.equal('{{foo}}');
+			expect(util.template('{{foo}}', {}, {empty:'hi'})).to.equal('hi');
+		});
+
+		it('should template only prefixed fields when opt.prefix is used', function() {
+			var fields = {
+					foo : 'foovalue',
+					bar : 'barvalue'
+				},
+				tpl, out;
+
+			tpl = '{{foo}}\n{{pfx.foo}}\n{{pfx.bar}}';
+			out = util.template(tpl, fields, { prefix:'pfx' });
+			expect(out).to.equal('{{foo}}\nfoovalue\nbarvalue');
+
+			tpl = '{{{foo}}}\n{{{pfx.foo}}}\n{{{pfx.bar}}}';
+			out = util.template(tpl, fields, { prefix:'nope' });
+			expect(out).to.equal(tpl);
+		});
+	});
+
+
+	describe('.memoize()', function() {
+		it('should be a function', function() {
+			expect(util).to.have.property('memoize');
+			expect(util.memoize).to.be.a('function');
+		});
+
+		it('should return a function', function() {
+			var spy = sinon.spy();
+			expect(util.memoize(spy)).to.be.a('function');
+			expect(util.memoize).to.throw();
+		});
+
+		it('should proxy calls to the original function', function() {
+			var spy = sinon.spy(),
+				proxy = util.memoize(spy);
+			proxy();
+			expect(spy).to.have.been.calledOnce;
+			proxy('a', 'b', 'c');
+			expect(spy).to.have.been.calledTwice;
+			expect(spy.secondCall).to.have.been.calledWithExactly('a', 'b', 'c');
+		});
+
+		it('should cache calls with an identical first argument', function() {
+			var spy = sinon.spy(),
+				proxy = util.memoize(spy);
+			proxy('a', 'b');
+			proxy('a', 'b', 'c');
+			expect(spy).to.have.been.calledOnce;
+			expect(spy).to.have.been.calledWithExactly('a', 'b');
+		});
+
+		it('should be at least 2x faster', function() {
+			var proxy, start, i, slow, fast;
+
+			function func(id) {
+				return document.querySelectorAll('#'+id);
+			}
+			proxy = util.memoize(func);
+
+			function now() {
+				return (window.performance && window.performance.now()) || (Date.now && Date.now()) || new Date().getTime();
+			}
+
+			function test(f) {
+				var start = now(),
+					c = 0;
+				while ( now() - start < 10 ) {
+					f('test');
+					c++;
+				}
+				return c;
+			}
+
+			slow = test(func);
+			fast = test(proxy);
+
+			//console.log('Original: '+slow+' ops/sec, memoized: '+fast+' ops/sec');
+			expect(fast).to.be.at.greaterThan(slow);
+		});
+	});
+
+
+	describe('.forEach()', function() {
+		it('should be a function', function() {
+			expect(util).to.have.property('forEach');
+			expect(util.forEach).to.be.a('function');
+		});
+
+		it('should be aliased as util.foreach', function() {
+			expect(util).to.have.property('foreach');
+			expect(util.foreach).to.equal(util.forEach);
+		});
+
+		it('should call iterator on all Object own-properties', function() {
+			var spy = sinon.spy(),
+				obj = {
+					key1 : 'value1',
+					key2 : 'value2',
+					key3 : 'value3'
+				},
+				ret;
+
+			ret = util.forEach(obj, spy);
+
+			expect(spy).to.have.been.calledThrice;
+			expect(spy.firstCall).to.have.been.calledWithExactly('value1', 'key1');
+			expect(spy.secondCall).to.have.been.calledWithExactly('value2', 'key2');
+			expect(spy.thirdCall).to.have.been.calledWithExactly('value3', 'key3');
+
+			expect(ret).to.equal(obj);
+		});
+
+		it('should bail if iterator returns false', function() {
+			var obj = { key:'value' },
+				spy = sinon.stub().returns(false);
+
+			util.forEach(obj, spy);
+
+			expect(spy).to.have.been.calledOnce;
+			expect(spy).to.have.been.calledWithExactly('value', 'key');
+		});
+	});
+
+
+	describe('.delve()', function() {
+		it('should be a function', function() {
+			expect(util).to.have.property('delve');
+			expect(util.delve).to.be.a('function');
+		});
+
+		it('should return the passed object for "this"', function() {
+			var obj = {};
+			expect(util.delve(obj, 'this')).to.equal(obj);
+		});
+
+		it('should return a property called "." if requested', function() {
+			var obj = {};
+			expect(util.delve(obj, '.', 'fallback')).to.equal('fallback');
+			obj['.'] = 'test';
+			expect(util.delve(obj, '.', 'fallback')).to.equal('test');
+		});
+
+		it('should return property values for valid keys', function() {
+			var obj = {
+				p1 : 'v1',
+				p2 : 'v2',
+				a : {
+					b : {
+						c : 'test'
+					}
+				}
+			};
+			expect(util.delve(obj, 'p1')).to.equal(obj.p1);
+			expect(util.delve(obj, 'p2')).to.equal(obj.p2);
+			expect(util.delve(obj, 'a')).to.equal(obj.a);
+			expect(util.delve(obj, 'a.b')).to.equal(obj.a.b);
+			expect(util.delve(obj, 'a.b.c')).to.equal(obj.a.b.c);
+		});
+
+		it('should return fallback or undefined for missing keys', function() {
+			var obj = {
+				a : {
+					b : {
+						c : 'test'
+					}
+				}
+			};
+			expect(util.delve(obj, 'b')).to.equal(undefined);
+			expect(util.delve(obj, 'b', 'fb')).to.equal('fb');
+			expect(util.delve(obj, 'a.c')).to.equal(undefined);
+			expect(util.delve(obj, 'a.c', 'fb')).to.equal('fb');
+			expect(util.delve(obj, 'b.c')).to.equal(undefined);
+			expect(util.delve(obj, 'b.c', 'fb')).to.equal('fb');
+		});
+	});
+
+
+	describe('.extend()', function() {
+		it('should be a function', function() {
+			expect(util).to.have.property('extend');
+			expect(util.extend).to.be.a('function');
+		});
+
+		it('should copy own-properties onto obj', function() {
+			var obj = {
+					orig : 'v'
+				},
+				props = {
+					foo : 'bar',
+					baz : 'bat'
+				},
+				props2 = {
+					test : 'val'
+				},
+				copy = util.extend(obj, props, props2);
+
+			expect(copy).to.deep.equal({
+				orig : 'v',
+				foo : 'bar',
+				baz : 'bat',
+				test : 'val'
+			});
+
+			// make sure it clones:
+			expect(util.extend({}, obj)).not.to.equal(obj);
+			expect(util.extend({}, obj)).to.deep.equal(obj);
+		});
+	});
+
+
+	describe('.inherits()', function() {
+		it('should be a function', function() {
+			expect(util).to.have.property('inherits');
+			expect(util.inherits).to.be.a('function');
+		});
+
+		it('should support instanceof', function() {
+			function Animal(){}
+			function Cat(){}
+			util.inherits(Cat, Animal);
+
+			var cat = new Cat();
+
+			expect(cat).to.be.an.instanceOf(Animal);
+			expect(cat instanceof Animal).to.equal(true);
+		});
+
+		it('should nest prototypes', function() {
+			function Animal(){}
+			Animal.prototype.type = 'Unknown';
+
+			function Cat(){}
+			util.inherits(Cat, Animal);
+			Cat.prototype.type = 'Feline';
+
+			var animal = new Animal();
+			var cat = new Cat();
+
+			expect(animal.type).to.equal('Unknown');
+			expect(cat.type).to.equal('Feline');
+		});
+	});
+
+
+	describe('.htmlEntities()', function() {
+		it('should be a function', function() {
+			expect(util).to.have.property('htmlEntities');
+			expect(util.htmlEntities).to.be.a('function');
+		});
+
+		it('should encode HTML characters', function() {
+			var chars = ['<', '>', '&', '"'],
+				encoded = ['&lt;', '&gt;', '&amp;', '&quot;'],
+				i;
+			for (i=0; i<chars.length; i++) {
+				expect(util.htmlEntities(chars[i])).to.equal(encoded[i]);
+			}
+		});
+	});
+
+
 	describe('Array.isArray()', function() {
 		it('should be a function', function() {
 			expect(Array).to.have.property('isArray');
