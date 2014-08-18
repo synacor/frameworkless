@@ -141,6 +141,9 @@
 			// Easy out: allow the slashes to concatenate, then normalize them
 			url = ('/' + this.baseUrl + '/' + url).replace(/\/{2,}/g, '/');
 		}
+		if (url.charAt(0)!=='/') {
+			url = '/' + url;
+		}
 		history[handler===true ? 'replaceState' : 'pushState'](0, 0, url);
 		return this.currentUrlFull===url || route(this, url);
 	};

@@ -151,6 +151,7 @@
 		 *		util.typeOf( undefined )  // undefined
 		 */
 		typeOf : function(value) {
+			var type;
 			if (value===undefined) {
 				return 'undefined';
 			}
@@ -163,7 +164,19 @@
 			else if (value instanceof RegExp) {
 				return 'regexp';
 			}
-			return (typeof value || 'object').toLowerCase();
+			type = (typeof value || 'object').toLowerCase();
+			if (type==='object') {
+				if (value instanceof Number) {
+					return 'number';
+				}
+				else if (value instanceof String) {
+					return 'string';
+				}
+				else if (value instanceof Boolean) {
+					return 'boolean';
+				}
+			}
+			return type;
 		},
 
 		/** Simple string templating: replace <code>{{fields}}</code> with values from a data object.
@@ -191,13 +204,13 @@
 				noopt = {};
 
 			function template(str, fields, options) {
-				current = fields;
-				currentOptions = options;
+				current = fields || noopt;
+				currentOptions = options || noopt;
 				return str.replace(rep, field);
 			}
 
 			function field(str, token) {
-				var opt = currentOptions || noopt,
+				var opt = currentOptions,
 					value;
 				if (opt.prefix) {
 					if (token.substring(0, opt.prefix.length)!==opt.prefix) {
