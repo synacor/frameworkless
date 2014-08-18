@@ -1,0 +1,14 @@
+{
+	"opts" : {
+		"template" : "./doctemplate",
+		"indexName" : "chameleon",
+		"mainpagetitle" : "Chameleon",
+		"private" : false
+	},
+	"tags": {
+		"allowUnknownTags": true
+	},
+	"plugins" : [
+		"plugins/markdown"
+	]
+}
