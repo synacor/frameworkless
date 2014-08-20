@@ -481,7 +481,7 @@
 		 *	@returns {String} A uuid String.
 		 */
 		uniqueId : function(prefix) {
-			return (prefix || '') + (++uuids);
+			return (prefix || '') + (++uuids).toString(36);
 		}
 
 	};
