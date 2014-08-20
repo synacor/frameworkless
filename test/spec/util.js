@@ -12,6 +12,185 @@ describe('util', function() {
 	});
 
 
+	describe('String', function() {
+		describe('#trim()', function() {
+			it('should be a function', function() {
+				expect(String.prototype).to.have.property('trim');
+				expect("foo".trim).to.be.a('function');
+			});
+
+			it('should trim spaces', function() {
+				expect("foo ".trim()).to.equal('foo');
+				expect(" foo".trim()).to.equal('foo');
+				expect(" foo ".trim()).to.equal('foo');
+				expect("  foo   ".trim()).to.equal('foo');
+			});
+
+			it('should trim tabs', function() {
+				expect("foo\t".trim()).to.equal('foo');
+				expect("\tfoo".trim()).to.equal('foo');
+				expect("\tfoo\t".trim()).to.equal('foo');
+				expect("\t\t\tfoo\t\t\t".trim()).to.equal('foo');
+			});
+
+			it('should trim newlines', function() {
+				expect("foo\r\n".trim()).to.equal('foo');
+				expect("\nfoo".trim()).to.equal('foo');
+				expect("\rfoo\n".trim()).to.equal('foo');
+				expect("\r\n\n\nfoo\n\r".trim()).to.equal('foo');
+			});
+
+			it('should trim mixed whitespace', function() {
+				expect(" \t\nfoo\t\n\t ".trim()).to.equal('foo');
+			});
+		});
+	});
+
+
+	describe('Array', function() {
+		describe('.isArray()', function() {
+			it('should be a function', function() {
+				expect(Array).to.have.property('isArray');
+				expect(Array.isArray).to.be.a('function');
+			});
+
+			it('should return false for non-Arrays', function() {
+				expect( Array.isArray({}) ).to.equal(false);
+				expect( Array.isArray("foo") ).to.equal(false);
+				expect( Array.isArray(25) ).to.equal(false);
+				expect( Array.isArray(/foo/g) ).to.equal(false);
+				expect( Array.isArray(null) ).to.equal(false);
+				expect( Array.isArray(undefined) ).to.equal(false);
+			});
+
+			it('should return true for Arrays', function() {
+				expect( Array.isArray([]) ).to.equal(true);
+				expect( Array.isArray(new Array()) ).to.equal(true);
+			});
+
+			it('should return true for Arrays created in other contexts', function() {
+				var frame = document.createElement('iframe'),
+					win, arr;
+
+				document.body.appendChild(frame);
+				win = frame.contentWindow;
+
+				expect( Array.isArray(new win.Object()) ).to.equal(false);
+
+				arr = new win.Array();
+				expect( Array.isArray(arr) ).to.equal(true);
+
+				win.document.write('<script>window.arr=[];</script>');
+				expect( Array.isArray(win.arr) ).to.equal(true);
+			});
+		});
+
+
+		describe('#forEach()', function() {
+			it('should be a function', function() {
+				expect(Array.prototype).to.have.property('forEach');
+				expect([].forEach).to.be.a('function');
+			});
+
+			it('should call iterator on each element', function() {
+				var arr = ['a', 'b', 'c'],
+					ctx = {},
+					spy = sinon.spy();
+				arr.forEach(spy, ctx);
+				expect(spy).to.have.been.calledThrice;
+				expect(spy.alwaysCalledOn(ctx)).to.equal(true);
+				expect(spy.firstCall).to.have.been.calledWithExactly('a', 0, arr);
+				expect(spy.secondCall).to.have.been.calledWithExactly('b', 1, arr);
+				expect(spy.thirdCall).to.have.been.calledWithExactly('c', 2, arr);
+			});
+		});
+	});
+
+
+	describe('Object', function() {
+		describe('.keys()', function() {
+			it('should be a function', function() {
+				expect(Object).to.have.property('keys');
+				expect(Object.keys).to.be.a('function');
+			});
+
+			it('should return an Array of own-properties', function() {
+				var obj = {
+						foo : 'fooval',
+						bar : 'barval',
+						baz : 'bazval'
+					};
+				expect(Object.keys(obj)).to.deep.equal(['foo', 'bar', 'baz']);
+			});
+
+			it('should skip prototype members', function() {
+				function Foo() {}
+				Foo.prototype.baz = 'bazval';
+				var obj = new Foo();
+				obj.foo = 'fooval';
+				obj.bar = 'barval';
+				expect(Object.keys(obj)).to.deep.equal(['foo', 'bar']);
+			});
+		});
+
+
+		describe('.create()', function() {
+			it('should be a function', function() {
+				expect(Object).to.have.property('create');
+				expect(Object.create).to.be.a('function');
+			});
+
+			it('should create a new object with a given prototype', function() {
+				var proto = {
+					foo : 'fooval',
+					meth : function() { },
+					ref : {
+						key : 'val'
+					}
+				};
+
+				var obj = Object.create(proto);
+
+				// no own-properties:
+				expect(obj).to.deep.equal({});
+
+				// all prototype properties in-tact
+				expect(obj.foo).to.equal(proto.foo);
+				expect(obj.meth).to.equal(proto.meth);
+				expect(obj.ref).to.equal(proto.ref);
+			});
+		});
+	});
+
+
+	describe('Function', function() {
+		describe('#bind()', function() {
+			it('should be a function', function() {
+				expect(Function.prototype).to.have.property('bind');
+				expect((function(){}).bind).to.be.a('function');
+			});
+
+			it('should bind a function to a given context', function() {
+				var ctx = {},
+					spy = sinon.spy(),
+					bound = spy.bind(ctx);
+				bound();
+				expect(spy).to.have.been.calledOn(ctx);
+			});
+
+			it('should curry additional arguments', function() {
+				var b = {},
+					d = [],
+					spy = sinon.spy(),
+					bound = spy.bind(null, 'a', b);
+				bound('c', d);
+				expect(spy).to.have.been.calledOn(spy);
+				expect(spy).to.have.been.calledWithExactly('a', b, 'c', d);
+			});
+		});
+	});
+
+
 	describe('.typeOf()', function() {
 		it('should be a function', function() {
 			expect(util).to.have.property('typeOf');
@@ -359,40 +538,30 @@ describe('util', function() {
 	});
 
 
-	describe('Array.isArray()', function() {
+	describe('.uniqueId()', function() {
 		it('should be a function', function() {
-			expect(Array).to.have.property('isArray');
-			expect(Array.isArray).to.be.a('function');
+			expect(util).to.have.property('uniqueId');
+			expect(util.uniqueId).to.be.a('function');
 		});
 
-		it('should return false for non-Arrays', function() {
-			expect( Array.isArray({}) ).to.equal(false);
-			expect( Array.isArray("foo") ).to.equal(false);
-			expect( Array.isArray(25) ).to.equal(false);
-			expect( Array.isArray(/foo/g) ).to.equal(false);
-			expect( Array.isArray(null) ).to.equal(false);
-			expect( Array.isArray(undefined) ).to.equal(false);
+		it('should return a unique string for 100 calls', function() {
+			var list = [],
+				unique = true,
+				offender, id, i;
+			for (i=100; i--; ) {
+				id = util.uniqueId();
+				if (list.indexOf(id)!==-1) {
+					unique = false;
+					offender = id;
+				}
+				list.push(id);
+			}
+			expect(list.length).to.equal(100);
+			expect(unique).to.equal(true);
 		});
 
-		it('should return true for Arrays', function() {
-			expect( Array.isArray([]) ).to.equal(true);
-			expect( Array.isArray(new Array()) ).to.equal(true);
-		});
-
-		it('should return true for Arrays created in other contexts', function() {
-			var frame = document.createElement('iframe'),
-				win, arr;
-
-			document.body.appendChild(frame);
-			win = frame.contentWindow;
-
-			expect( Array.isArray(new win.Object()) ).to.equal(false);
-
-			arr = new win.Array();
-			expect( Array.isArray(arr) ).to.equal(true);
-
-			win.document.write('<script>window.arr=[];</script>');
-			expect( Array.isArray(win.arr) ).to.equal(true);
+		it('should return optionally prefixed IDs', function() {
+			expect(util.uniqueId('prefix')).to.contain('prefix');
 		});
 	});
 
