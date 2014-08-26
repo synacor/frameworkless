@@ -19,14 +19,17 @@
  *
  *		hub.emit('hubba');		// "bubba"
  */
-(function(factory) {
-	if (typeof window.define==='function' && window.define.amd) {
-		window.define([], factory);
+(function(root, factory) {
+	if (typeof define==='function' && define.amd) {
+		define([], factory);
+	}
+	else if (typeof module==='object' && module.exports) {
+		module.exports = factory();
 	}
 	else {
-		factory();
+		root.events = factory();
 	}
-}(function() {
+}(this, function() {
 	var key = '_eventemitterevents';
 
 	function copy(t, f, i) {

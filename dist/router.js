@@ -31,13 +31,16 @@
  *		});
  */
 (function(factory) {
-	if (typeof window.define==='function' && window.define.amd) {
-		window.define(['events'], factory);
+	if (typeof define==='function' && define.amd) {
+		define(['events'], factory);
+	}
+	else if (typeof module==='object' && module.exports) {
+		module.exports = factory(require('events'));
 	}
 	else {
-		factory(window.EventEmitter);
+		root.router = factory(root.events || root.EventEmitter);
 	}
-}(function(events) {
+}(this, function(events) {
 	var EventEmitter = events.EventEmitter || events;
 
 	/**	A URL router.

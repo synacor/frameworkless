@@ -9,14 +9,17 @@
  *		// Now you can use some ES5 stuff everywhere:
  *		Array.isArray.bind([])(Object.keys(Object.create({a:' '.trim()})).forEach(util.typeOf));
  */
-(function(factory) {
-	if (typeof window.define==='function' && window.define.amd) {
-		window.define([], factory);
+(function(root, factory) {
+	if (typeof define==='function' && define.amd) {
+		define([], factory);
+	}
+	else if (typeof module==='object' && module.exports) {
+		module.exports = factory();
 	}
 	else {
-		factory();
+		root.util = factory();
 	}
-}(function() {
+}(this, function() {
 	var entityMap = {'&':'amp','<':'lt','>':'gt','"':'quot'},
 		uuids = 0,
 		exports;
