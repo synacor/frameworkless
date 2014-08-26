@@ -30,7 +30,7 @@
  *			} while (t=t.parentNode);
  *		});
  */
-(function(factory) {
+(function(root, factory) {
 	if (typeof define==='function' && define.amd) {
 		define(['events'], factory);
 	}
