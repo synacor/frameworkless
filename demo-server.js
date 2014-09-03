@@ -18,6 +18,8 @@ app.use(serveStatic('demo/'));
 
 app.use('/docs', serveStatic('docs/'));
 
+app.use('/dist', serveStatic('dist/'));
+
 app.listen(port, function() {
 	console.log('Server listening on localhost:'+port);
 });
