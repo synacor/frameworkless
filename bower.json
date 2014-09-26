@@ -1,6 +1,6 @@
 {
   "name": "frameworkless",
-  "version": "0.2.2",
+  "version": "1.0.0",
   "authors": [
     "Jason Miller <jasonmiller@synacor.com>"
   ],
@@ -11,6 +11,7 @@
     "globals"
   ],
   "keywords": [
+    "frameworkless",
     "events",
     "router",
     "util"
@@ -29,7 +30,8 @@
     "src",
     "dist/min",
     "jsdoc.json",
-    "demo-server.js",
-    "Gruntfile.js"
+    "server.js",
+    "Gruntfile.js",
+    "package.json"
   ]
 }

@@ -3,7 +3,6 @@
 [![Develop](http://vm02.jasonmiller.dev.opal.synacor.com:3001/status/APLA-FWKLS0?title=develop)](https://bamboo.corp.synacor.com/browse/APLA-FWKLS0)
 
 
-
 Frameworkless
 =============
 A simple, flexible framework for developing medium-complexity web application front-ends.  
@@ -12,41 +11,34 @@ A simple, flexible framework for developing medium-complexity web application fr
 ---
 
 
-Quick Start
------------
-To get started über quick, you can generate a frameworkless app skeleton using Yeoman.  
+Start from a Boilerplate
+------------------------
 
-**Install the frameworkless yeoman generator:**  
-`npm install -g generator-frameworkless`  
+Get started right away, so you can disassemble and play around at your lesure.
 
-**Generate your scaffolding:**  
-`yo frameworkless`  
+```bash
+# Clone frameworkless
+git clone git@github.com:synacorinc/frameworkless.git
 
+# Install development dependencies
+npm install
 
----
+# Build the framework
+npm run-script build   # or just `grunt` if you have grunt-cli installed globally
 
-
-Medium Start
-------------
-If you're a little more particular about picking up new frameworks *(guilty)*, you may prefer to get things started manually so you can disassemble and play around at your lesure.  
-
-**Clone the QuickStart repo manually:**  
-`git clone git@github.com:frameworkless/frameworkless-boilerplate.git`  
-
-**Take a look around:**  
-
-* Framework bits live in `public/js/lib`
-* App code is in `public/js/app`, `public/templates` and `public/css`.  
-
+# Run a local web server
+PORT=8080 npm start
+```
 
 ---
 
 
-Slow Start
-----------
-Ok, so maybe you are just a bit ... *cautious?*  Yes, you're just cautious, that's all.  Slow and steady wins the race.  It's *definitely* not a fear thing, that would be ridiculous!  
+Quick Repo Tour
+---------------
 
-.. right?
+* `/src` is where the source code lives
+* `/dist` is for build output. This is committed alongside source code so it is available via [bower](http://bower.io).
+* `/demo` is a simple example app, built using [requirejs](http://requirejs.org) and [ford.js](http://developit.github.io/ford.js)
 
 
 ---
@@ -78,7 +70,7 @@ DOM Make Me Think
 -----------------
 One very common feature is notably absent: there is no DOM abstraction.  Taking yet another page from [Riot.js](https://github.com/moot/riotjs), DOM manipulation is left up to you, or to your library of choice.  
 
-In the Quick Start example, a ridiculously thin DOM abstraction called [ford.js](https://github.com/developit/ford.js) is being used.  You are free to use whichever library you are most comfortable with - or no library at all.  
+In the [demo](http://github.com/synacorinc/frameworkless/tree/master/demo), a tiny DOM library called [ford.js](https://github.com/developit/ford.js) is being used.  You are free to use whichever library you are most comfortable with - or no library at all.  
 
 Perhaps you may find the need for complete abstraction of the DOM slowly fades away.  
 
@@ -88,4 +80,4 @@ Perhaps you may find the need for complete abstraction of the DOM slowly fades a
 
 License
 =======
-Hopefully GPLv3 or similar.  
+BSD

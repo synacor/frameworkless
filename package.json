@@ -1,20 +1,26 @@
 {
   "name": "frameworkless",
-  "version": "0.2.2",
+  "version": "1.0.0",
   "authors": [
     "Jason Miller <jasonmiller@synacor.com>"
   ],
   "description": "A simple, flexible framework for developing medium complexity web application frontends.",
-  "main": "demo/server.js",
+  "main": "server.js",
   "scripts": {
     "build": "grunt",
     "test": "grunt test",
-    "start": "node demo-server.js"
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
     "url": "git@github.com:synacorinc/frameworkless.git"
   },
+  "keywords": [
+    "frameworkless",
+    "events",
+    "router",
+    "util"
+  ],
   "license": "BSD 3-Clause",
   "homepage": "http://synacorinc.github.io/frameworkless/",
   "dependencies": {
