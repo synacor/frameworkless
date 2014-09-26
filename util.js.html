@@ -29,51 +29,54 @@
  *	@module util
  *	@example
  *		&lt;caption>Using Polyfills:&lt;/caption>
- *		
+ *
  *		// Including util as a dependency adds the polyfills:
  *		var util = require('util');
- *		
+ *
  *		// Now you can use some ES5 stuff everywhere:
  *		Array.isArray.bind([])(Object.keys(Object.create({a:' '.trim()})).forEach(util.typeOf));
  */
-(function(factory) {
-	if (typeof window.define==='function' &amp;&amp; window.define.amd) {
-		window.define([], factory);
+(function(root, factory) {
+	if (typeof define==='function' &amp;&amp; define.amd) {
+		define([], factory);
+	}
+	else if (typeof module==='object' &amp;&amp; module.exports) {
+		module.exports = factory();
 	}
 	else {
-		factory();
+		root.util = factory();
 	}
-}(function() {
+}(this, function() {
 	var entityMap = {'&amp;':'amp','&lt;':'lt','>':'gt','"':'quot'},
 		uuids = 0,
-		util;
-	
+		exports;
+
 	/**	The built in String object.
 	 *	@name String
 	 *	@external String
 	 *	@see {@link https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/String String}
 	 */
-	
+
 	/**	The built in Object object.
 	 *	@name Object
 	 *	@external Object
 	 *	@see {@link https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object Object}
 	 */
-	 
+
 	/**	The built in Array object.
 	 *	@name Array
 	 *	@external Array
 	 *	@see {@link https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array Array}
 	 */
-	 
+
 	/**	The built in Function object.
 	 *	@name Function
 	 *	@external Function
 	 *	@see {@link https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function Function}
 	 */
-	 
+
 	// Polyfills!
-	
+
 	if (!String.prototype.trim) {
 		/**	Remove whitespace from the beginning and end of a string.
 		 *	@function external:String#trim
@@ -83,7 +86,7 @@
 			return this.replace(/^\s*.*?\s*$/g, '');
 		};
 	}
-	
+
 	if (!Array.isArray) {
 		/**	Check if the given value is an Array.
 		 *	@function external:Array.isArray
@@ -93,7 +96,7 @@
 			return Object.prototype.toString.call(obj)==='[object Array]';
 		};
 	}
-	
+
 	if (!Array.prototype.forEach) {
 		/**	Call &lt;code>iterator&lt;/code> on each value of an Array.
 		 *	@param {Function} iterator		Gets passed &lt;code>(value, index, array)&lt;/code>.
@@ -107,7 +110,7 @@
 			}
 		};
 	}
-	
+
 	if (!Object.keys) {
 		/**	Get an Array of the given object's own-property keys.
 		 *	@function external:Object.keys
@@ -123,7 +126,7 @@
 			return keys;
 		};
 	}
-	
+
 	if (!Object.create) {
 		/**	Create a new object with the given reference object as its prototype.
 		 *	@function external:Object.create
@@ -135,7 +138,7 @@
 			return new F();
 		};
 	}
-	
+
 	if (!Function.prototype.bind) {
 		/**	Bind a function to the given context and any given arguments.
 		 *	@function external:Function#bind
@@ -160,14 +163,14 @@
 			return proxy;
 		};
 	}
-	
-	
-	util = /** @lends module:util */ {
+
+
+	exports = {
 
 		/**	Get the type of a given value.
 		 *	@param {Any} value		A value to check the type of
 		 *	@returns {String} A normalized lowercase type name.
-		 *	
+		 *
 		 *	@example
 		 *		util.typeOf( [] )         // array
 		 *		util.typeOf( {} )         // object
@@ -178,6 +181,7 @@
 		 *		util.typeOf( undefined )  // undefined
 		 */
 		typeOf : function(value) {
+			var type;
 			if (value===undefined) {
 				return 'undefined';
 			}
@@ -190,9 +194,21 @@
 			else if (value instanceof RegExp) {
 				return 'regexp';
 			}
-			return (typeof value || 'object').toLowerCase();
+			type = (typeof value || 'object').toLowerCase();
+			if (type==='object') {
+				if (value instanceof Number) {
+					return 'number';
+				}
+				else if (value instanceof String) {
+					return 'string';
+				}
+				else if (value instanceof Boolean) {
+					return 'boolean';
+				}
+			}
+			return type;
 		},
-		
+
 		/** Simple string templating: replace &lt;code>{{fields}}&lt;/code> with values from a data object.
 		 *	@function
 		 *	@param {String} str			The string to operate on.
@@ -200,10 +216,10 @@
 		 *	@param {Object} [options]	Hashmap of options.
 		 *	@param {String} [options.prefix]	If set, only operates on the subset of fields prefixed by the given character sequence. Example: &lt;code>"i18n."&lt;/code>
 		 *	@returns {String} The tempalted string.
-		 *	
+		 *
 		 *	@example
 		 *		&lt;caption>prints the string: Hello Jason, your email is Fake &amp;lt;not-a@real.email&amp;gt;&lt;/caption>
-		 *		
+		 *
 		 *		util.template('Hello {{user.name}}, your email is {{{user.email}}}.', {
 		 *			user : {
 		 *				name : 'Jason',
@@ -214,37 +230,40 @@
 		template : (function() {
 			var rep = /\{\{\{?([^{}]+)\}?\}\}/gi,
 				currentOptions,
-				current;
-		
+				current,
+				noopt = {};
+
 			function template(str, fields, options) {
-				current = fields;
-				currentOptions = options;
+				current = fields || noopt;
+				currentOptions = options || noopt;
 				return str.replace(rep, field);
 			}
-		
+
 			function field(str, token) {
 				var opt = currentOptions,
 					value;
-				if (opt &amp;&amp; opt.prefix) {
+				if (opt.prefix) {
 					if (token.substring(0, opt.prefix.length)!==opt.prefix) {
 						return str;
 					}
 					token = token.substring(opt.prefix.length);
 				}
-				//value = current.hasOwnProperty(token) &amp;&amp; current[token];
-				value = util.delve(current, token);
+				value = exports.delve(current, token);
 				if (value) {
-					if (str.charAt(2)==='{') {
-						value = util.htmlEntities(value);
+					if (str.charAt(2)!=='{') {
+						value = exports.htmlEntities(value);
 					}
 					return value;
 				}
+				if (opt.empty!==false) {
+					str = opt.empty || '';
+				}
 				return str;
 			}
-		
+
 			return template;
 		}()),
-		
+
 		/**	Create a memoized proxy of a function.  This caches the return values of the given function using only the &lt;strong>first argument&lt;/strong> as a cache key.
 		 *	@function
 		 *	@param {Function} func			A function to memoize.
@@ -252,16 +271,16 @@
 		 *	@param {Object} [options]		Hashmap of options for the cache.
 		 *	@param {Object} [options.ignoreCase=false]		If &lt;code>true&lt;/code>, the cache becomes case-insensitive.
 		 *	@returns {Function} A memoized version of &lt;code>func&lt;/code>.
-		 *	
+		 *
 		 *	@example
 		 *		// Executes getElementById each time it is called:
 		 *		function find(id) {
 		 *			return document.getElementById(id);
 		 *		}
-		 *		
+		 *
 		 *		// Wrap find() in a cache:
 		 *		var fastFind = util.memoize(find);
-		 *		
+		 *
 		 *		find('test') === fastFind('test');   // true
 		 */
 		memoize : function(func, mem, options) {
@@ -294,13 +313,13 @@
 			};
 			return memoized;
 		},
-		
+
 		/** Call an iterator function on any Object or Array.&lt;br />
 		 *	&lt;strong>Note:&lt;/strong> Return false from &lt;code>iterator&lt;/code> to break out of the loop.
 		 *	@param {Array|Object} obj		Any object
 		 *	@param {Function} iterator		A function to call on each entry, gets passed &lt;code>(value, key, obj)&lt;/code>.
 		 *	@returns {Object} Returns the first arguments, &lt;code>obj&lt;/code>, for convenience.
-		 *	
+		 *
 		 *	@example
 		 *		util.forEach(window, function(value, key) {
 		 *			console.log(value, key);
@@ -324,29 +343,29 @@
 			}
 			return obj;
 		},
-		
+
 		/**	Retrieve a nested property value using dot-notated keys.
 		 *	@param {Object} obj		An object to descend into
 		 *	@param {String} key		A dot-notated (and/or bracket-notated) key
 		 *	@param {any} [fallback]	Fallback to return if &lt;code>key&lt;/code> is not found in &lt;code>obj&lt;/code>
 		 *	@returns The corresponding key's value if it exists, otherwise &lt;code>fallback&lt;/code> or &lt;code>undefined&lt;/code>.
-		 *	
+		 *
 		 *	@example
 		 *		&lt;caption>Basic Usage:&lt;/caption>
-		 *		
+		 *
 		 *		var res = {
 		 *			json : {
 		 *				success : true,
 		 *				message : 'Thing completed.'
 		 *			}
 		 *		};
-		 *		
+		 *
 		 *		var msg = util.delve(res, 'json.message');
 		 *		console.log(msg);		// 'Thing completed.'
-		 *	
+		 *
 		 *	@example
 		 *		&lt;caption>DOM Traversal:&lt;/caption>
-		 *		
+		 *
 		 *		document.body.innerHTML = '&lt;span>hello&lt;/span>';
 		 *		var text = util.delve(window, 'document.body.childNodes.0.textContent');
 		 *		console.log(text);		// "hello"
@@ -371,12 +390,12 @@
 			}
 			return c;
 		},
-		
+
 		/** Copy own-properties from &lt;code>props&lt;/code> onto &lt;code>base&lt;/code>.
 		 *	@param {Object} base		An object onto which properties should be copied
 		 *	@param {Object} props*		The rest of the arguments will have their properties copied onto &lt;code>base&lt;/code>
 		 *	@returns base
-		 *	
+		 *
 		 *	@example
 		 *		&lt;caption>Basic Usage:&lt;/caption>
 		 *		var obj1 = {
@@ -387,46 +406,46 @@
 		 *				test : 'bar',
 		 *				obj2prop : 'obj2'
 		 *			};
-		 *		
+		 *
 		 *		// copy properties from obj2 onto obj1:
 		 *		util.extend(obj1, obj2);
-		 *		
+		 *
 		 *		console.log(obj1.test);
 		 *		//	{
 		 *		//		test : "bar",
 		 *		//		obj1prop : "obj1",
 		 *		//		obj2prop : "obj2"
 		 *		//	}
-		 *	
+		 *
 		 *	@example
 		 *		&lt;caption>Shallow Clone:&lt;/caption>
 		 *		var orig = {
 		 *			foo : 'bar'
 		 *		};
-		 *		
+		 *
 		 *		var clone = util.extend({}, orig);
-		 *		
+		 *
 		 *		console.log(clone === orig);   // false
 		 *		console.log(clone.foo === orig.foo);   // true
-		 *	
+		 *
 		 *	@example
 		 *		&lt;caption>Tip: Cheater constructor options&lt;/caption>
-		 *		
+		 *
 		 *		function MyClass(options) {
 		 *			// copy options onto the instance:
 		 *			util.extend(this, options || {});
 		 *		}
-		 *		
+		 *
 		 *		new MyClass({
 		 *			unique : true
 		 *		});
 		 */
 		extend : function extend(base, props) {
-			var i, p, obj, len=arguments.length, ctor=util.constructor, bypass;
+			var i, p, obj, len=arguments.length, ctor=exports.constructor, bypass;
 			for (i=1; i&lt;len; i++) {
 				obj = arguments[i];
 				if (obj!==null &amp;&amp; obj!==undefined) {
-					bypass = obj.constructor===util.constructor;
+					bypass = obj.constructor===exports.constructor;
 					for (p in obj) {
 						if (bypass || obj.hasOwnProperty(p)) {
 							base[p] = obj[p];
@@ -436,7 +455,7 @@
 			}
 			return base;
 		},
-		
+
 		/**	Simple inheritance.&lt;br />
 		 *	&lt;b>Note: Operates directly on baseClass.&lt;/b>
 		 *	@param {Function} baseClass		The base (child) class.
@@ -447,17 +466,17 @@
 		 *			this.sound = "";
 		 *		}
 		 *		Animal.prototype.type = 'Unknown';
-		 *		
+		 *
 		 *		function Cat() {
 		 *			// call parent constructor:
 		 *			Animal.call(this);
 		 *			this.sound = "mew";
 		 *		}
 		 *		Cat.prototype.type = 'Feline';
-		 *		
+		 *
 		 *		// Make Cat inherit from Animal:
 		 *		util.inherits(Cat, Animal);
-		 *		
+		 *
 		 *		var cat = new Cat();
 		 *		console.log(cat.sound);		// "mew"
 		 *		console.log(cat.type);		// "Feline"
@@ -467,12 +486,12 @@
 			function F() {}
 			F.prototype = superClass.prototype;
 			base.prototype = new F();
-			util.extend(base.prototype, proto, {
+			exports.extend(base.prototype, proto, {
 				constructor : base,
 				__super : superClass
 			});
 		},
-		
+
 		/**	Escape HTML entities within a string.
 		 *	@param {String} str		The string to entity-encode
 		 *	@returns {String} An entity-encoded version of the input string, &lt;code>str&lt;/code>.
@@ -486,26 +505,27 @@
 			}
 			return t.join('');
 		},
-		
+
 		/** Generate an unique ID (unique only to the page), with optional prefix.
 		 *	@param {String} [prefix=""]		Optionally prefix the returned ID with a given string.
 		 *	@returns {String} A uuid String.
 		 */
 		uniqueId : function(prefix) {
-			return (prefix || '') + (++uuids);
+			return (prefix || '') + (++uuids).toString(36);
 		}
-	
+
 	};
-	
+
 	/**	Alias of {@link util.forEach}.
 	 *	@function module:util.foreach
 	 *	@deprecated
 	 *	@ignore
 	 */
-	util.foreach = util.forEach;
-	
-	return util;
-}));</code></pre>
+	exports.foreach = exports.forEach;
+
+	return exports;
+}));
+</code></pre>
         </article>
     </section>
 
@@ -517,11 +537,11 @@
 	<a class="menuLink">Menu</a>
 	
 	<nav>
-		<h2><a href="index.html">frameworkless</a></h2><h3>Modules</h3><ul><li title="module:events"><a href="module-events.html">events</a></li><li title="module:router"><a href="module-router.html">router</a></li><li title="module:util"><a href="module-util.html">util</a></li></ul><h3>Externals</h3><ul><li title="external:Array"><a href="external-Array.html">Array</a></li><li title="external:Function"><a href="external-Function.html">Function</a></li><li title="external:Object"><a href="external-Object.html">Object</a></li><li title="external:String"><a href="external-String.html">String</a></li></ul><h3>Classes</h3><ul><li title="module:events.EventEmitter"><a href="module-events.EventEmitter.html">EventEmitter</a></li><li title="module:router.Router"><a href="module-router.Router.html">Router</a></li></ul><h3>Events</h3><ul><li title="module:router.Router#event:route"><a href="module-router.Router.html#event:route">route</a></li></ul>
+		<h2><a href="index.html">frameworkless</a></h2><div class="nav-modules"><h3>Modules</h3><ul><li title="module:events"><a href="module-events.html">events</a></li><div class="navinner nav-methods"><h4>Methods</h4><ul><li title="module:events.events"><a href="module-events.html#events">events</a></li><li title="module:events.mixin"><a href="module-events.html#mixin">mixin</a></li></ul></div><li title="module:router"><a href="module-router.html">router</a></li><div class="navinner nav-methods"><h4>Methods</h4><ul><li title="module:router.router"><a href="module-router.html#router">router</a></li></ul></div><li title="module:util"><a href="module-util.html">util</a></li><div class="navinner nav-methods"><h4>Methods</h4><ul><li title="module:util.delve"><a href="module-util.html#delve">delve</a></li><li title="module:util.extend"><a href="module-util.html#extend">extend</a></li><li title="module:util.forEach"><a href="module-util.html#forEach">forEach</a></li><li title="module:util.htmlEntities"><a href="module-util.html#htmlEntities">htmlEntities</a></li><li title="module:util.inherits"><a href="module-util.html#inherits">inherits</a></li><li title="module:util.memoize"><a href="module-util.html#memoize">memoize</a></li><li title="module:util.template"><a href="module-util.html#template">template</a></li><li title="module:util.typeOf"><a href="module-util.html#typeOf">typeOf</a></li><li title="module:util.uniqueId"><a href="module-util.html#uniqueId">uniqueId</a></li></ul></div></ul><div class="nav-externals"><h3>Externals</h3><ul><li title="external:Array"><a href="external-Array.html">Array</a></li><div class="navinner nav-methods"><h4>Methods</h4><ul><li title="external:Array.isArray"><a href="external-Array.html#isArray">isArray</a></li><li title="external:Array#forEach"><a href="external-Array.html#forEach">forEach</a></li></ul></div><li title="external:Function"><a href="external-Function.html">Function</a></li><div class="navinner nav-methods"><h4>Methods</h4><ul><li title="external:Function#bind"><a href="external-Function.html#bind">bind</a></li></ul></div><li title="external:Object"><a href="external-Object.html">Object</a></li><div class="navinner nav-methods"><h4>Methods</h4><ul><li title="external:Object.create"><a href="external-Object.html#create">create</a></li><li title="external:Object.keys"><a href="external-Object.html#keys">keys</a></li></ul></div><li title="external:String"><a href="external-String.html">String</a></li><div class="navinner nav-methods"><h4>Methods</h4><ul><li title="external:String#trim"><a href="external-String.html#trim">trim</a></li></ul></div></ul><div class="nav-classes"><h3>Classes</h3><ul><li title="module:events.EventEmitter"><a href="module-events.EventEmitter.html">EventEmitter</a></li><div class="navinner nav-methods"><h4>Methods</h4><ul><li title="module:events.EventEmitter#addListener"><a href="module-events.EventEmitter.html#addListener">addListener</a></li><li title="module:events.EventEmitter#emit"><a href="module-events.EventEmitter.html#emit">emit</a></li><li title="module:events.EventEmitter#on"><a href="module-events.EventEmitter.html#on">on</a></li><li title="module:events.EventEmitter#once"><a href="module-events.EventEmitter.html#once">once</a></li><li title="module:events.EventEmitter#removeListener"><a href="module-events.EventEmitter.html#removeListener">removeListener</a></li><li title="module:events.EventEmitter#trigger"><a href="module-events.EventEmitter.html#trigger">trigger</a></li></ul></div><li title="module:router.Router"><a href="module-router.Router.html">Router</a></li><div class="navinner nav-methods"><h4>Methods</h4><ul><li title="module:router.Router#addListener"><a href="module-router.Router.html#addListener">addListener</a></li><li title="module:router.Router#emit"><a href="module-router.Router.html#emit">emit</a></li><li title="module:router.Router#get"><a href="module-router.Router.html#get">get</a></li><li title="module:router.Router#on"><a href="module-router.Router.html#on">on</a></li><li title="module:router.Router#once"><a href="module-router.Router.html#once">once</a></li><li title="module:router.Router#removeListener"><a href="module-router.Router.html#removeListener">removeListener</a></li><li title="module:router.Router#route"><a href="module-router.Router.html#route">route</a></li><li title="module:router.Router#trigger"><a href="module-router.Router.html#trigger">trigger</a></li></ul></div></ul><div class="nav-events"><h3>Events</h3><ul><li title="module:router.Router#event:route"><a href="module-router.Router.html#event:route">route</a></li></ul>
 	</nav>
 
 	<footer>
-		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha3</a> on Wed May 21 2014 13:04:13 GMT-0400 (EDT)
+		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha8</a> on Tue Aug 26 2014 16:26:08 GMT-0400 (EDT)
 	</footer>
 
 	<script src="scripts/prettify/prettify.js"></script>

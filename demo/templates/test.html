@@ -5,3 +5,25 @@
 <div class="content">
 	<p>This is just some crappy test page, it doesn't have a purpose.</p>
 </div>
+
+<div class="content">
+	<p>Try adding some querystring parameters: <a href="/#/test/?foo=bar">/test/?foo=bar</a>, <a href="/#/test/?foo=&amp;key=value">/test/?foo=&amp;key=value</a></p>
+	<table class="pure-table">
+		<thead>
+			<tr>
+				<th>Key</th>
+				<th>Value</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>foo</td>
+				<td>{{params.$query.foo}}</td>
+			</tr>
+			<tr>
+				<td>key</td>
+				<td>{{params.$query.key}}</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
