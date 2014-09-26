@@ -1,7 +1,3 @@
-[![Master](http://vm02.jasonmiller.dev.opal.synacor.com:3001/status/APLA-FWKLS?title=master)](https://bamboo.corp.synacor.com/browse/APLA-FWKLS)
-
-[![Develop](http://vm02.jasonmiller.dev.opal.synacor.com:3001/status/APLA-FWKLS0?title=develop)](https://bamboo.corp.synacor.com/browse/APLA-FWKLS0)
-
 
 Frameworkless
 =============
