@@ -20,10 +20,10 @@ git clone git@github.com:synacorinc/frameworkless.git
 npm install
 
 # Build the framework
-npm run-script build   # or just `grunt` if you have grunt-cli installed globally
+npm run-script build      # or just `grunt` if you have grunt-cli installed globally
 
 # Run a local web server
-PORT=8080 npm start
+PORT=8080 npm start       # this just does `node server.js`
 ```
 
 ---
