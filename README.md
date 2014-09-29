@@ -1,9 +1,15 @@
 
 ![frameworkless logo](logo.png)
 
-Frameworkless
+Frameworkless [![NPM Version](http://img.shields.io/npm/v/frameworkless.svg?style=flat)](https://www.npmjs.org/package/frameworkless)
 =============
 A simple, flexible framework for developing medium-complexity web application front-ends.  
+
+[![Build Status](https://img.shields.io/travis/developit/puredom-model.svg?style=flat&branch=master)](https://travis-ci.org/developit/puredom-model)
+[![Dependency Status](http://img.shields.io/david/synacorinc/frameworkless.svg?style=flat)](https://david-dm.org/synacorinc/frameworkless)
+[![devDependency Status](http://img.shields.io/david/dev/synacorinc/frameworkless.svg?style=flat)](https://david-dm.org/synacorinc/frameworkless#info=devDependencies)
+
+[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/synacorinc/frameworkless)
 
 
 ---
@@ -27,6 +33,7 @@ npm run-script build      # or just `grunt` if you have grunt-cli installed glob
 # Run a local web server
 PORT=8080 npm start       # this just does `node server.js`
 ```
+
 
 ---
 
