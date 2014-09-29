@@ -17,6 +17,20 @@ prettyPrint();
 	}
 })();
 
+
+(function() {
+	var el, small;
+	document.addEventListener('scroll', function() {
+		var sm = document.body.scrollTop > 5;
+		if (sm!==small) {
+			small = sm;
+			el = el || document.getElementsByClassName('github-fork-ribbon-wrapper')[0];
+			el.className = el.className.replace(/\s*small/g, '') + (small ? ' small' : '');
+		}
+	});
+}());
+
+
 // menu updates
 (function() {
 	function updateNav() {
