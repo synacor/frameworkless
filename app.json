@@ -1,0 +1,7 @@
+{
+  "name": "frameworkless",
+  "description": "A simple, flexible framework for developing medium complexity web application frontends.",
+  "repository": "https://github.com/synacorinc/frameworkless",
+  "logo": "https://synacorinc.github.com/frameworkless/logo.png",
+  "keywords": ["framework", "router", "events"]
+}
