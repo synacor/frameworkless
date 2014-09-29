@@ -26,6 +26,11 @@ module.exports = function(grunt) {
 				cwd : 'src/',
 				src : '**',
 				dest : 'demo/js/lib/'
+			},
+
+			docs : {
+				src : 'logo.png',
+				dest : 'docs/logo.png'
 			}
 		},
 
@@ -73,7 +78,12 @@ module.exports = function(grunt) {
 				interrupt : true
 			},
 			src : {
-				files : ['src/**/*.js'],
+				files : [
+					'src/**/*.js',
+					'Gruntfile.js',
+					'README.md',
+					'jsdoc-template/**/*'
+				],
 				tasks : ['default']
 			},
 			test : {
@@ -95,7 +105,8 @@ module.exports = function(grunt) {
 		'copy:main',
 		'uglify:main',
 		'copy:demo',
-		'jsdoc:main'
+		'jsdoc:main',
+		'copy:docs'
 	]);
 
 	grunt.registerTask('test', ['mocha:test'])
