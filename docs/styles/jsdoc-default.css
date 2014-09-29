@@ -384,11 +384,10 @@ section {
 	*/
 	background: #FFF;
 	padding: 5px 20px;
-	/*
-	-webkit-box-shadow: 1px 0 0 #EEE;
-	-moz-box-shadow: 1px 0 0 #EEE;
-	box-shadow: 1px 0 0 #EEE;
-	*/
+
+	-webkit-box-shadow: 1px 0 0 #E9E9E9;
+	-moz-box-shadow: 1px 0 0 #E9E9E9;
+	box-shadow: 1px 0 0 #E9E9E9;
 }
 
 .variation {
@@ -678,12 +677,15 @@ div.description {
 }
 
 article dl dt h4.name {
-	border-top: 1px dotted #CCC;
-	margin-top: 20px;
-	padding-top: 20px;
+	box-shadow: 0 -1px 0 #E9E9E9;
+	border-top: 20px solid #F9F9F9;
+	margin: 50px -20px 0;
+	padding: 40px 20px 0;
 }
 article dl dt:first-child h4.name {
 	border-top: none;
+	margin-top: 0;
+	padding-top: 20px;
 }
 
 article dl dd,
@@ -763,6 +765,10 @@ pre.prettyprint.source.linenums > * {
 	-moz-tab-size: 4;
 	tab-size: 4;
 	white-space: no-wrap;
+	min-width: 100%;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
 }
 
 .prettyprint li code {
