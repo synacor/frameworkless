@@ -1,4 +1,6 @@
 
+![frameworkless logo](logo.png)
+
 Frameworkless
 =============
 A simple, flexible framework for developing medium-complexity web application front-ends.  
