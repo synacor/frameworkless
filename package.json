@@ -8,7 +8,7 @@
   "main": "server.js",
   "scripts": {
     "build": "grunt",
-    "test": "grunt test",
+    "test": "grunt && grunt test",
     "start": "node server.js"
   },
   "repository": {

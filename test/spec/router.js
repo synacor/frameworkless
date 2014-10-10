@@ -1,9 +1,8 @@
 describe('router', function() {
 	var router,
-		oldHistory;
+		history;
 
 	beforeEach(function() {
-		oldHistory = window.history;
 		function add(title, state, url, _offset) {
 			var entry = {
 				title : title,
@@ -14,7 +13,7 @@ describe('router', function() {
 			history.entries[history.entries.length - 1 - _offset] = entry;
 			history.length = history.entries.length;
 		}
-		window.history = {
+		history = {
 			length : 0,
 			entries : [],
 			replaceState : sinon.spy(function(t, s, u) {
@@ -22,10 +21,6 @@ describe('router', function() {
 			}),
 			pushState : sinon.spy(add)
 		};
-	});
-
-	afterEach(function() {
-		window.history = oldHistory;
 	});
 
 	it('should be exposed via require("router")', function(done) {
@@ -97,6 +92,44 @@ describe('router', function() {
 				expect(routes.routes[0]).to.exist;
 				expect(routes.routes[0].url).to.equal('/foo/bar');
 				expect(routes.routes[0].handler).to.equal(route);
+			});
+
+			it('should pass parameter segments as options.params', function() {
+				var routes = router({ history:history }),
+					route = sinon.spy();
+
+				routes.route('/before/:param1/after/:param2', route);
+				routes.route('/before/value1/after/value2?q=v');
+
+				expect(route).to.have.been.calledOnce;
+				expect(route.firstCall.args).to.deep.equal([
+					{
+						param1 : 'value1',
+						param2 : 'value2',
+						$query : {
+							q : 'v'
+						}
+					},
+					routes
+				]);
+			});
+
+			it('should pass empty parameter segments as empty strings', function() {
+				var routes = router({ history:history }),
+					route = sinon.spy();
+
+				routes.route('/before/:param1/after/:param2', route);
+				routes.route('/before//after?');
+				expect(route).to.have.been.calledOnce;
+				console.log(route.firstCall.args);
+				expect(route.firstCall.args).to.deep.equal([
+					{
+						param1 : '',
+						param2 : '',
+						$query : {}
+					},
+					routes
+				]);
 			});
 		});
 
