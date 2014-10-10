@@ -1,7 +1,7 @@
 
 ![frameworkless logo](logo.png)
 
-Frameworkless [![NPM Version](http://img.shields.io/npm/v/frameworkless.svg?style=flat)](https://www.npmjs.org/package/frameworkless)
+Frameworkless [![NPM Version](http://img.shields.io/npm/v/frameworkless.svg?style=flat)](https://www.npmjs.org/package/frameworkless) [![Bower Version](http://img.shields.io/bower/v/frameworkless.svg?style=flat)](http://bower.io/search/?q=frameworkless)
 =============
 A simple, flexible framework for developing medium-complexity web application front-ends.  
 
@@ -15,8 +15,30 @@ A simple, flexible framework for developing medium-complexity web application fr
 ---
 
 
-Start from a Boilerplate
-------------------------
+Use a Package Manager
+---------------------
+**bower:**
+
+```bash
+bower install frameworkless
+# copy the stuff you want
+cp bower_components/frameworkless/dist/{events,util,router}.js src/lib
+```
+
+**npm:**
+
+```bash
+npm install frameworkless
+# copy the stuff you want
+cp node_modules/frameworkless/dist/{events,util,router}.js src/lib
+```
+
+
+---
+
+
+Use the Source
+--------------
 
 Get started right away, so you can disassemble and play around at your lesure.
 
