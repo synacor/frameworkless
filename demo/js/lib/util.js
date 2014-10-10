@@ -120,12 +120,9 @@
 		Function.prototype.bind = function(context, args) {
 			var func=this, proxy;
 			args = Array.prototype.slice.call(arguments, 1);
-			if (context===null || context===undefined) {
-				context = this;
-			}
 			/**	@ignore */
 			proxy = function() {
-				return func.apply(context, args.concat(Array.prototype.slice.call(arguments)));
+				return func.apply(context===null || context===undefined ? this : context, args.concat(Array.prototype.slice.call(arguments)));
 			};
 			/**	@ignore */
 			proxy.unbind = function() {

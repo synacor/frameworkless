@@ -182,9 +182,10 @@ describe('util', function() {
 				var b = {},
 					d = [],
 					spy = sinon.spy(),
-					bound = spy.bind(null, 'a', b);
+					bound = spy.bind(null, 'a', b),
+					ctx = (function(){ return this; }());
 				bound('c', d);
-				expect(spy).to.have.been.calledOn(spy);
+				expect(spy).to.have.been.calledOn(ctx);
 				expect(spy).to.have.been.calledWithExactly('a', b, 'c', d);
 			});
 		});
