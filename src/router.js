@@ -48,11 +48,12 @@
 	 *	@augments module:events.EventEmitter
 	 *	@fires module:router.Router#route
 	 */
-	function Router() {
-		if (!(this instanceof Router)) return new Router();
+	function Router(options) {
+		if (!(this instanceof Router)) return new Router(options);
 
 		var router = this;
 		this.routes = [];
+		this.history = options && options.history || history;
 
 		if (!(this instanceof EventEmitter)) {
 			EventEmitter.call(this);
@@ -142,12 +143,12 @@
 		}
 		if (relativeToBaseUrl!==false && this.baseUrl) {
 			// Easy out: allow the slashes to concatenate, then normalize them
-			url = ('/' + this.baseUrl + '/' + url).replace(/\/{2,}/g, '/');
+			url = '/' + strip(this.baseUrl) + '/' + strip(url);
 		}
 		if (url.charAt(0)!=='/') {
 			url = '/' + url;
 		}
-		history[handler===true ? 'replaceState' : 'pushState'](0, 0, url);
+		this.history[handler===true ? 'replaceState' : 'pushState'](0, 0, url);
 		return this.currentUrlFull===url || route(this, url);
 	};
 
@@ -175,7 +176,7 @@
 		if (matches.length>1) {
 			url = matches[0];
 			search = matches.slice(1).join('?');
-			p = search.split('&');
+			p = search.length ? search.split('&') : [];
 			for (i=0; i<p.length; i++) {
 				matches = p[i].split('=');
 				query[ decodeURIComponent(matches[0]) ] = decodeURIComponent(matches.slice(1).join('='));
@@ -249,7 +250,7 @@
 		route = segmentize(route);
 		for (var i=0; i<Math.max(url.length, route.length); i++) {
 			if (route[i] && route[i].charAt(0)===':') {
-				matches[route[i].substring(1)] = decodeURIComponent(url[i]);
+				matches[route[i].substring(1)] = decodeURIComponent(url[i] || '');
 			}
 			else {
 				if (route[i]!==url[i]) {
