@@ -143,7 +143,7 @@
 		}
 		if (relativeToBaseUrl!==false && this.baseUrl) {
 			// Easy out: allow the slashes to concatenate, then normalize them
-			url = '/' + strip(this.baseUrl) + '/' + strip(url);
+			url = strip('/' + this.baseUrl) + '/' + strip(url);
 		}
 		if (url.charAt(0)!=='/') {
 			url = '/' + url;
