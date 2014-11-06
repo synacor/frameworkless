@@ -5,7 +5,7 @@ Frameworkless [![NPM Version](http://img.shields.io/npm/v/frameworkless.svg?styl
 =============
 A simple, flexible framework for developing medium-complexity web application front-ends.  
 
-[![Build Status](https://img.shields.io/travis/developit/puredom-model.svg?style=flat&branch=master)](https://travis-ci.org/developit/puredom-model)
+[![Build Status](https://img.shields.io/travis/synacorinc/frameworkless.svg?style=flat&branch=master)](https://travis-ci.org/synacorinc/frameworkless)
 [![Dependency Status](http://img.shields.io/david/synacorinc/frameworkless.svg?style=flat)](https://david-dm.org/synacorinc/frameworkless)
 [![devDependency Status](http://img.shields.io/david/dev/synacorinc/frameworkless.svg?style=flat)](https://david-dm.org/synacorinc/frameworkless#info=devDependencies)
 
