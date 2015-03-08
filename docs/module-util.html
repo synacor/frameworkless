@@ -87,11 +87,11 @@
             
         <p class="code-caption">Using Polyfills:</p>
     
-    <pre class="prettyprint"><code>// Including util as a dependency adds the polyfills:
-var util = require('util');
+    <pre class="prettyprint"><code>		// Including util as a dependency adds the polyfills:
+		var util = require('util');
 
-// Now you can use some ES5 stuff everywhere:
-Array.isArray.bind([])(Object.keys(Object.create({a:' '.trim()})).forEach(util.typeOf));</code></pre>
+		// Now you can use some ES5 stuff everywhere:
+		Array.isArray.bind([])(Object.keys(Object.create({a:' '.trim()})).forEach(util.typeOf));</code></pre>
 
         
     
@@ -115,7 +115,7 @@ Array.isArray.bind([])(Object.keys(Object.create({a:' '.trim()})).forEach(util.t
         <dl>
             
 <dt>
-    <h4 class="name" id="delve"><span class="type-signature">&lt;static> </span>delve<span class="signature">(obj, key, <span class="optional">fallback</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".delve"><span class="type-signature">&lt;static> </span>delve<span class="signature">(obj, key, <span class="optional">fallback</span>)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -315,23 +315,23 @@ Array.isArray.bind([])(Object.keys(Object.create({a:' '.trim()})).forEach(util.t
         
         <p class="code-caption">Basic Usage:</p>
     
-    <pre class="prettyprint"><code>var res = {
-	json : {
-		success : true,
-		message : 'Thing completed.'
-	}
-};
+    <pre class="prettyprint"><code>		var res = {
+			json : {
+				success : true,
+				message : 'Thing completed.'
+			}
+		};
 
-var msg = util.delve(res, 'json.message');
-console.log(msg);		// 'Thing completed.'
+		var msg = util.delve(res, 'json.message');
+		console.log(msg);		// 'Thing completed.'
 
 	</code></pre>
 
         <p class="code-caption">DOM Traversal:</p>
     
-    <pre class="prettyprint"><code>document.body.innerHTML = '&lt;span>hello&lt;/span>';
-var text = util.delve(window, 'document.body.childNodes.0.textContent');
-console.log(text);		// "hello"</code></pre>
+    <pre class="prettyprint"><code>		document.body.innerHTML = '&lt;span>hello&lt;/span>';
+		var text = util.delve(window, 'document.body.childNodes.0.textContent');
+		console.log(text);		// "hello"</code></pre>
 
     
 </dd>
@@ -339,7 +339,7 @@ console.log(text);		// "hello"</code></pre>
         
             
 <dt>
-    <h4 class="name" id="extend"><span class="type-signature">&lt;static> </span>extend<span class="signature">(base, props*)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".extend"><span class="type-signature">&lt;static> </span>extend<span class="signature">(base, props*)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -488,50 +488,50 @@ console.log(text);		// "hello"</code></pre>
         
         <p class="code-caption">Basic Usage:</p>
     
-    <pre class="prettyprint"><code>var obj1 = {
-		test : 'foo',
-		obj1prop : 'obj1'
-	},
-	obj2 = {
-		test : 'bar',
-		obj2prop : 'obj2'
-	};
+    <pre class="prettyprint"><code>		var obj1 = {
+				test : 'foo',
+				obj1prop : 'obj1'
+			},
+			obj2 = {
+				test : 'bar',
+				obj2prop : 'obj2'
+			};
 
-// copy properties from obj2 onto obj1:
-util.extend(obj1, obj2);
+		// copy properties from obj2 onto obj1:
+		util.extend(obj1, obj2);
 
-console.log(obj1.test);
-//	{
-//		test : "bar",
-//		obj1prop : "obj1",
-//		obj2prop : "obj2"
-//	}
+		console.log(obj1.test);
+		//	{
+		//		test : "bar",
+		//		obj1prop : "obj1",
+		//		obj2prop : "obj2"
+		//	}
 
 	</code></pre>
 
         <p class="code-caption">Shallow Clone:</p>
     
-    <pre class="prettyprint"><code>var orig = {
-	foo : 'bar'
-};
+    <pre class="prettyprint"><code>		var orig = {
+			foo : 'bar'
+		};
 
-var clone = util.extend({}, orig);
+		var clone = util.extend({}, orig);
 
-console.log(clone === orig);   // false
-console.log(clone.foo === orig.foo);   // true
+		console.log(clone === orig);   // false
+		console.log(clone.foo === orig.foo);   // true
 
 	</code></pre>
 
         <p class="code-caption">Tip: Cheater constructor options</p>
     
-    <pre class="prettyprint"><code>function MyClass(options) {
-	// copy options onto the instance:
-	util.extend(this, options || {});
-}
+    <pre class="prettyprint"><code>		function MyClass(options) {
+			// copy options onto the instance:
+			util.extend(this, options || {});
+		}
 
-new MyClass({
-	unique : true
-});</code></pre>
+		new MyClass({
+			unique : true
+		});</code></pre>
 
     
 </dd>
@@ -539,7 +539,7 @@ new MyClass({
         
             
 <dt>
-    <h4 class="name" id="forEach"><span class="type-signature">&lt;static> </span>forEach<span class="signature">(obj, iterator)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    <h4 class="name" id=".forEach"><span class="type-signature">&lt;static> </span>forEach<span class="signature">(obj, iterator)</span><span class="type-signature"> &rarr; {Object}</span></h4>
     
     
 </dt>
@@ -703,8 +703,8 @@ new MyClass({
         <h5>Example</h5>
         
     <pre class="prettyprint"><code>util.forEach(window, function(value, key) {
-	console.log(value, key);
-});</code></pre>
+			console.log(value, key);
+		});</code></pre>
 
     
 </dd>
@@ -712,7 +712,7 @@ new MyClass({
         
             
 <dt>
-    <h4 class="name" id="htmlEntities"><span class="type-signature">&lt;static> </span>htmlEntities<span class="signature">(str)</span><span class="type-signature"> &rarr; {String}</span></h4>
+    <h4 class="name" id=".htmlEntities"><span class="type-signature">&lt;static> </span>htmlEntities<span class="signature">(str)</span><span class="type-signature"> &rarr; {String}</span></h4>
     
     
 </dt>
@@ -851,7 +851,7 @@ new MyClass({
         
             
 <dt>
-    <h4 class="name" id="inherits"><span class="type-signature">&lt;static> </span>inherits<span class="signature">(baseClass, superClass)</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id=".inherits"><span class="type-signature">&lt;static> </span>inherits<span class="signature">(baseClass, superClass)</span><span class="type-signature"> &rarr; {function}</span></h4>
     
     
 </dt>
@@ -1012,23 +1012,23 @@ new MyClass({
         <h5>Example</h5>
         
     <pre class="prettyprint"><code>function Animal() {
-	this.sound = "";
-}
-Animal.prototype.type = 'Unknown';
+			this.sound = "";
+		}
+		Animal.prototype.type = 'Unknown';
 
-function Cat() {
-	// call parent constructor:
-	Animal.call(this);
-	this.sound = "mew";
-}
-Cat.prototype.type = 'Feline';
+		function Cat() {
+			// call parent constructor:
+			Animal.call(this);
+			this.sound = "mew";
+		}
+		Cat.prototype.type = 'Feline';
 
-// Make Cat inherit from Animal:
-util.inherits(Cat, Animal);
+		// Make Cat inherit from Animal:
+		util.inherits(Cat, Animal);
 
-var cat = new Cat();
-console.log(cat.sound);		// "mew"
-console.log(cat.type);		// "Feline"</code></pre>
+		var cat = new Cat();
+		console.log(cat.sound);		// "mew"
+		console.log(cat.type);		// "Feline"</code></pre>
 
     
 </dd>
@@ -1036,7 +1036,7 @@ console.log(cat.type);		// "Feline"</code></pre>
         
             
 <dt>
-    <h4 class="name" id="memoize"><span class="type-signature">&lt;static> </span>memoize<span class="signature">(func, <span class="optional">mem</span>, <span class="optional">options</span>)</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id=".memoize"><span class="type-signature">&lt;static> </span>memoize<span class="signature">(func, <span class="optional">mem</span>, <span class="optional">options</span>)</span><span class="type-signature"> &rarr; {function}</span></h4>
     
     
 </dt>
@@ -1333,14 +1333,14 @@ console.log(cat.type);		// "Feline"</code></pre>
         <h5>Example</h5>
         
     <pre class="prettyprint"><code>// Executes getElementById each time it is called:
-function find(id) {
-	return document.getElementById(id);
-}
+		function find(id) {
+			return document.getElementById(id);
+		}
 
-// Wrap find() in a cache:
-var fastFind = util.memoize(find);
+		// Wrap find() in a cache:
+		var fastFind = util.memoize(find);
 
-find('test') === fastFind('test');   // true</code></pre>
+		find('test') === fastFind('test');   // true</code></pre>
 
     
 </dd>
@@ -1348,7 +1348,7 @@ find('test') === fastFind('test');   // true</code></pre>
         
             
 <dt>
-    <h4 class="name" id="template"><span class="type-signature">&lt;static> </span>template<span class="signature">(str, fields, <span class="optional">options</span>)</span><span class="type-signature"> &rarr; {String}</span></h4>
+    <h4 class="name" id=".template"><span class="type-signature">&lt;static> </span>template<span class="signature">(str, fields, <span class="optional">options</span>)</span><span class="type-signature"> &rarr; {String}</span></h4>
     
     
 </dt>
@@ -1620,12 +1620,12 @@ find('test') === fastFind('test');   // true</code></pre>
         
         <p class="code-caption">prints the string: Hello Jason, your email is Fake &lt;not-a@real.email&gt;</p>
     
-    <pre class="prettyprint"><code>util.template('Hello {{user.name}}, your email is {{{user.email}}}.', {
-	user : {
-		name : 'Jason',
-		email : 'Fake &lt;not-a@real.email>'
-	}
-});</code></pre>
+    <pre class="prettyprint"><code>		util.template('Hello {{user.name}}, your email is {{{user.email}}}.', {
+			user : {
+				name : 'Jason',
+				email : 'Fake &lt;not-a@real.email>'
+			}
+		});</code></pre>
 
     
 </dd>
@@ -1633,7 +1633,7 @@ find('test') === fastFind('test');   // true</code></pre>
         
             
 <dt>
-    <h4 class="name" id="typeOf"><span class="type-signature">&lt;static> </span>typeOf<span class="signature">(value)</span><span class="type-signature"> &rarr; {String}</span></h4>
+    <h4 class="name" id=".typeOf"><span class="type-signature">&lt;static> </span>typeOf<span class="signature">(value)</span><span class="type-signature"> &rarr; {String}</span></h4>
     
     
 </dt>
@@ -1770,12 +1770,12 @@ find('test') === fastFind('test');   // true</code></pre>
         <h5>Example</h5>
         
     <pre class="prettyprint"><code>util.typeOf( [] )         // array
-util.typeOf( {} )         // object
-util.typeOf( "" )         // string
-util.typeOf( 5 )          // number
-util.typeOf( /./g )       // regexp
-util.typeOf( null )       // null
-util.typeOf( undefined )  // undefined</code></pre>
+		util.typeOf( {} )         // object
+		util.typeOf( "" )         // string
+		util.typeOf( 5 )          // number
+		util.typeOf( /./g )       // regexp
+		util.typeOf( null )       // null
+		util.typeOf( undefined )  // undefined</code></pre>
 
     
 </dd>
@@ -1783,7 +1783,7 @@ util.typeOf( undefined )  // undefined</code></pre>
         
             
 <dt>
-    <h4 class="name" id="uniqueId"><span class="type-signature">&lt;static> </span>uniqueId<span class="signature">(<span class="optional">prefix</span>)</span><span class="type-signature"> &rarr; {String}</span></h4>
+    <h4 class="name" id=".uniqueId"><span class="type-signature">&lt;static> </span>uniqueId<span class="signature">(<span class="optional">prefix</span>)</span><span class="type-signature"> &rarr; {String}</span></h4>
     
     
 </dt>
@@ -1957,11 +1957,11 @@ util.typeOf( undefined )  // undefined</code></pre>
 	<a class="menuLink">Menu</a>
 
 	<nav>
-		<h2><a href="index.html">frameworkless</a></h2><div class="nav-modules"><h3>Modules</h3><ul><li title="module:events"><a href="module-events.html">events</a></li><div class="navinner nav-methods"><h4>Methods</h4><ul><li title="module:events.events"><a href="module-events.html#events">events</a></li><li title="module:events.mixin"><a href="module-events.html#mixin">mixin</a></li></ul></div><li title="module:router"><a href="module-router.html">router</a></li><div class="navinner nav-methods"><h4>Methods</h4><ul><li title="module:router.router"><a href="module-router.html#router">router</a></li></ul></div><li title="module:util"><a href="module-util.html">util</a></li><div class="navinner nav-methods"><h4>Methods</h4><ul><li title="module:util.delve"><a href="module-util.html#delve">delve</a></li><li title="module:util.extend"><a href="module-util.html#extend">extend</a></li><li title="module:util.forEach"><a href="module-util.html#forEach">forEach</a></li><li title="module:util.htmlEntities"><a href="module-util.html#htmlEntities">htmlEntities</a></li><li title="module:util.inherits"><a href="module-util.html#inherits">inherits</a></li><li title="module:util.memoize"><a href="module-util.html#memoize">memoize</a></li><li title="module:util.template"><a href="module-util.html#template">template</a></li><li title="module:util.typeOf"><a href="module-util.html#typeOf">typeOf</a></li><li title="module:util.uniqueId"><a href="module-util.html#uniqueId">uniqueId</a></li></ul></div></ul><div class="nav-externals"><h3>Externals</h3><ul><li title="external:Array"><a href="external-Array.html">Array</a></li><div class="navinner nav-methods"><h4>Methods</h4><ul><li title="external:Array.isArray"><a href="external-Array.html#isArray">isArray</a></li><li title="external:Array#forEach"><a href="external-Array.html#forEach">forEach</a></li></ul></div><li title="external:Function"><a href="external-Function.html">Function</a></li><div class="navinner nav-methods"><h4>Methods</h4><ul><li title="external:Function#bind"><a href="external-Function.html#bind">bind</a></li></ul></div><li title="external:Object"><a href="external-Object.html">Object</a></li><div class="navinner nav-methods"><h4>Methods</h4><ul><li title="external:Object.create"><a href="external-Object.html#create">create</a></li><li title="external:Object.keys"><a href="external-Object.html#keys">keys</a></li></ul></div><li title="external:String"><a href="external-String.html">String</a></li><div class="navinner nav-methods"><h4>Methods</h4><ul><li title="external:String#trim"><a href="external-String.html#trim">trim</a></li></ul></div></ul><div class="nav-classes"><h3>Classes</h3><ul><li title="module:events.EventEmitter"><a href="module-events.EventEmitter.html">EventEmitter</a></li><div class="navinner nav-methods"><h4>Methods</h4><ul><li title="module:events.EventEmitter#addListener"><a href="module-events.EventEmitter.html#addListener">addListener</a></li><li title="module:events.EventEmitter#emit"><a href="module-events.EventEmitter.html#emit">emit</a></li><li title="module:events.EventEmitter#on"><a href="module-events.EventEmitter.html#on">on</a></li><li title="module:events.EventEmitter#once"><a href="module-events.EventEmitter.html#once">once</a></li><li title="module:events.EventEmitter#removeListener"><a href="module-events.EventEmitter.html#removeListener">removeListener</a></li><li title="module:events.EventEmitter#trigger"><a href="module-events.EventEmitter.html#trigger">trigger</a></li></ul></div><li title="module:router.Router"><a href="module-router.Router.html">Router</a></li><div class="navinner nav-methods"><h4>Methods</h4><ul><li title="module:router.Router#addListener"><a href="module-router.Router.html#addListener">addListener</a></li><li title="module:router.Router#emit"><a href="module-router.Router.html#emit">emit</a></li><li title="module:router.Router#get"><a href="module-router.Router.html#get">get</a></li><li title="module:router.Router#on"><a href="module-router.Router.html#on">on</a></li><li title="module:router.Router#once"><a href="module-router.Router.html#once">once</a></li><li title="module:router.Router#removeListener"><a href="module-router.Router.html#removeListener">removeListener</a></li><li title="module:router.Router#route"><a href="module-router.Router.html#route">route</a></li><li title="module:router.Router#trigger"><a href="module-router.Router.html#trigger">trigger</a></li></ul></div></ul><div class="nav-events"><h3>Events</h3><ul><li title="module:router.Router#event:route"><a href="module-router.Router.html#event:route">route</a></li></ul>
+		<h2><a href="index.html">frameworkless</a></h2><div class="nav-modules"><h3>Modules</h3><ul><li title="module:events"><a href="module-events.html">events</a></li><div class="navinner nav-methods"><h4>Methods</h4><ul><li title="module:events.events"><a href="module-events.html#.events">events</a></li><li title="module:events.mixin"><a href="module-events.html#.mixin">mixin</a></li></ul></div><li title="module:router"><a href="module-router.html">router</a></li><div class="navinner nav-methods"><h4>Methods</h4><ul><li title="module:router.router"><a href="module-router.html#.router">router</a></li></ul></div><li title="module:util"><a href="module-util.html">util</a></li><div class="navinner nav-methods"><h4>Methods</h4><ul><li title="module:util.delve"><a href="module-util.html#.delve">delve</a></li><li title="module:util.extend"><a href="module-util.html#.extend">extend</a></li><li title="module:util.forEach"><a href="module-util.html#.forEach">forEach</a></li><li title="module:util.htmlEntities"><a href="module-util.html#.htmlEntities">htmlEntities</a></li><li title="module:util.inherits"><a href="module-util.html#.inherits">inherits</a></li><li title="module:util.memoize"><a href="module-util.html#.memoize">memoize</a></li><li title="module:util.template"><a href="module-util.html#.template">template</a></li><li title="module:util.typeOf"><a href="module-util.html#.typeOf">typeOf</a></li><li title="module:util.uniqueId"><a href="module-util.html#.uniqueId">uniqueId</a></li></ul></div></ul><div class="nav-externals"><h3>Externals</h3><ul><li title="external:Array"><a href="external-Array.html">Array</a></li><div class="navinner nav-methods"><h4>Methods</h4><ul><li title="external:Array.isArray"><a href="external-Array.html#.isArray">isArray</a></li><li title="external:Array#forEach"><a href="external-Array.html#forEach">forEach</a></li></ul></div><li title="external:Function"><a href="external-Function.html">Function</a></li><div class="navinner nav-methods"><h4>Methods</h4><ul><li title="external:Function#bind"><a href="external-Function.html#bind">bind</a></li></ul></div><li title="external:Object"><a href="external-Object.html">Object</a></li><div class="navinner nav-methods"><h4>Methods</h4><ul><li title="external:Object.create"><a href="external-Object.html#.create">create</a></li><li title="external:Object.keys"><a href="external-Object.html#.keys">keys</a></li></ul></div><li title="external:String"><a href="external-String.html">String</a></li><div class="navinner nav-methods"><h4>Methods</h4><ul><li title="external:String#trim"><a href="external-String.html#trim">trim</a></li></ul></div></ul><div class="nav-classes"><h3>Classes</h3><ul><li title="module:events.EventEmitter"><a href="module-events.EventEmitter.html">EventEmitter</a></li><div class="navinner nav-methods"><h4>Methods</h4><ul><li title="module:events.EventEmitter#addListener"><a href="module-events.EventEmitter.html#addListener">addListener</a></li><li title="module:events.EventEmitter#emit"><a href="module-events.EventEmitter.html#emit">emit</a></li><li title="module:events.EventEmitter#on"><a href="module-events.EventEmitter.html#on">on</a></li><li title="module:events.EventEmitter#once"><a href="module-events.EventEmitter.html#once">once</a></li><li title="module:events.EventEmitter#removeListener"><a href="module-events.EventEmitter.html#removeListener">removeListener</a></li><li title="module:events.EventEmitter#trigger"><a href="module-events.EventEmitter.html#trigger">trigger</a></li></ul></div><li title="module:router.Router"><a href="module-router.Router.html">Router</a></li><div class="navinner nav-methods"><h4>Methods</h4><ul><li title="module:router.Router#addListener"><a href="module-router.Router.html#addListener">addListener</a></li><li title="module:router.Router#emit"><a href="module-router.Router.html#emit">emit</a></li><li title="module:router.Router#get"><a href="module-router.Router.html#get">get</a></li><li title="module:router.Router#on"><a href="module-router.Router.html#on">on</a></li><li title="module:router.Router#once"><a href="module-router.Router.html#once">once</a></li><li title="module:router.Router#removeListener"><a href="module-router.Router.html#removeListener">removeListener</a></li><li title="module:router.Router#route"><a href="module-router.Router.html#route">route</a></li><li title="module:router.Router#trigger"><a href="module-router.Router.html#trigger">trigger</a></li></ul></div></ul><div class="nav-events"><h3>Events</h3><ul><li title="module:router.Router#event:route"><a href="module-router.Router.html#event:route">route</a></li></ul>
 	</nav>
 
 	<footer>
-		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Tue Oct 21 2014 11:06:57 GMT-0400 (EDT)
+		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-beta2</a> on Sun Mar 08 2015 17:23:14 GMT-0400 (EDT)
 	</footer>
 
 	<script src="scripts/prettify/prettify.js"></script>

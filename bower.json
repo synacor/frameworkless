@@ -1,11 +1,15 @@
 {
   "name": "frameworkless",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "authors": [
     "Jason Miller <jasonmiller@synacor.com>"
   ],
   "description": "A simple, flexible framework for developing medium complexity web application frontends.",
-  "main": "dist/events.js, dist/router.js, dist/util.js",
+  "main": [
+    "dist/events.js",
+    "dist/router.js",
+    "dist/util.js"
+  ],
   "moduleType": [
     "amd",
     "globals"
