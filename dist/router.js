@@ -141,6 +141,7 @@
 			this.routes.sort(sort);
 			return this;
 		}
+		if (url.match(/^([a-z]+:)?\/\//)) return false;
 		if (relativeToBaseUrl!==false && this.baseUrl) {
 			// Easy out: allow the slashes to concatenate, then normalize them
 			url = strip('/' + this.baseUrl) + '/' + strip(url);

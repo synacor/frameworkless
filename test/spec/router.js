@@ -114,6 +114,16 @@ describe('router', function() {
 				]);
 			});
 
+			it('should not attempt to match full URLs as routes', function() {
+				var routes = router({ history:history }),
+					route = sinon.spy();
+
+				routes.route('/:foo/:bar', route);
+				routes.route('//foo/bar');
+
+				expect(route).to.not.have.been.called;
+			});
+
 			it('should pass empty parameter segments as empty strings', function() {
 				var routes = router({ history:history }),
 					route = sinon.spy();
