@@ -3,6 +3,8 @@
 
 Frameworkless [![NPM Version](http://img.shields.io/npm/v/frameworkless.svg?style=flat)](https://www.npmjs.org/package/frameworkless) [![Bower Version](http://img.shields.io/bower/v/frameworkless.svg?style=flat)](http://bower.io/search/?q=frameworkless)
 =============
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/synacor/frameworkless.svg)](https://greenkeeper.io/)
 A simple, flexible framework for developing medium-complexity web application front-ends.  
 
 [![Build Status](https://img.shields.io/travis/synacor/frameworkless.svg?style=flat&branch=master)](https://travis-ci.org/synacor/frameworkless)
